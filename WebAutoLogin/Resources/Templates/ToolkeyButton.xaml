@@ -1,0 +1,16 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ControlTemplate TargetType="{x:Type Button}" x:Key="ToolkeyButtonTemplate">
+        <Border>
+            <ContentPresenter/>
+        </Border>
+    </ControlTemplate>
+
+    <ControlTemplate TargetType="{x:Type ToggleButton}" x:Key="ToolkeyToggleTemplate">
+        <Border>
+            <ContentPresenter/>
+        </Border>
+    </ControlTemplate>
+
+</ResourceDictionary>

@@ -1,0 +1,173 @@
+﻿using Autologin.Helpers;
+using AutoLoginConnector.Services.Configuration;
+using AutoLoginConnector.Services.PingStats;
+using AutoLoginConnector.Types;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace AutoLoginConnector.Services.Connector;
+
+/// <summary>
+/// The connection logic routine is coordinated here.
+/// Don't clutter it up. Keep it concise. Handle boilerplates in separate files.
+/// </summary>
+public class ConnectorService
+{
+    private readonly ConnectorData _data = new();
+    private CancellationTokenSource _ctSource = new();
+
+    private Task? _task = null;
+
+    public Action? OnPingsPolled;
+
+    public Action? OnLoginAttempted;
+
+    public Action? OnLoginSucceeded;
+
+    public async Task Initialize()
+    {
+        if (await ConfigurationService.Load() is LoginConfig config)
+            config.ApplyTo(_data);
+        TryStart();
+    }
+    public void Decouple()
+    {
+        OnPingsPolled = null;
+        OnLoginAttempted = null;
+        OnLoginSucceeded = null;
+    }
+
+    public void TryStart()
+    {
+        Task.Run(async () =>
+        {
+            await EndRoutine().ConfigureAwait(false);
+            await StartRoutine();
+        });
+    }
+
+    public void TryEnd()
+        => Task.Run(EndRoutine);
+
+    private async Task StartRoutine()
+    {
+        var config = await ConfigurationService.Load();
+        if (config == null)
+            return;
+        config.ApplyTo(_data);
+        if (_data.LoginMode != LoginMode.Disabled && !_data.Validate())
+            return;
+        _ctSource = new CancellationTokenSource();
+        _task = Task.Factory.StartNew(async ()
+            => await ManageAsync(_ctSource.Token).ConfigureAwait(false),
+            TaskCreationOptions.LongRunning);
+    }
+    private async Task EndRoutine()
+    {
+        if (_task != null)
+        {
+            _ctSource.Cancel();
+            await _task;
+            _task = null;
+        }
+    }
+
+    public async Task ManageAsync(CancellationToken token = default)
+    {
+        int pingInterval = _data.PingInterval;
+        int loginMultiplier = _data.LoginMultiplier;
+        int pingIntervalCounter = 0;
+        int loginMultiplierCounter = 0;
+        bool lastConnected, loginSuccess;
+
+        while (!token.IsCancellationRequested)
+        {
+            // Ping wait cycle
+            if (pingIntervalCounter < pingInterval)
+            {
+                await Task.Delay(1000, token);
+                pingIntervalCounter++;
+                continue;
+            }
+            pingIntervalCounter = 0;
+
+            // Pings
+            await PollPings(token);
+            _ = Task.Run(()=>OnPingsPolled?.Invoke(), CancellationToken.None);
+
+            // Login wait cycle
+            if (loginMultiplierCounter < loginMultiplier)
+            {
+                loginMultiplierCounter++;
+                continue;
+            }
+            loginMultiplierCounter = 0;
+
+            // Logins
+            if (_data.LoginMode == LoginMode.Disabled)
+                continue;
+            lastConnected = IsConnected();
+            loginSuccess = false;
+            if (!lastConnected || _data.LoginMode == LoginMode.Always)
+            {
+                loginSuccess = await AttemptLogin(token); //returns false if already logged in or failed
+            }
+            _ = Task.Run(() => OnLoginAttempted?.Invoke(), CancellationToken.None);
+
+            // Poll destinations once more if connected state changed
+            if (!lastConnected && loginSuccess)
+            {
+                await PollPings(token);
+                _ = Task.Run(() => OnLoginSucceeded ?.Invoke(), CancellationToken.None);
+            }
+        }
+    }
+
+    private async Task PollPings(CancellationToken token = default)
+    {
+        List<Task> pingList = new();
+
+        if (_data.Gateway != null)
+            pingList.Add( _data.Gateway.SendPing(_data.Options, token));
+        if (_data.Portal != null)
+            pingList.Add(_data.Portal.SendPing(_data.Options, token));
+
+        pingList.AddRange(_data.Destinations.Select(x => x.SendPing(_data.Options, token)));
+        pingList.AddRange(_data.CustomNICs.Select(x => x.SendPing(_data.Options, token)));
+
+        await Task.WhenAll(pingList);
+    }
+
+    private bool IsConnected() =>
+        _data.Destinations.Any(x => x.PingLatency != -1);
+
+    public async Task<bool> AttemptLogin(CancellationToken token)
+    {
+        if (_data.Portal == null || string.IsNullOrEmpty(_data.Portal.Address))
+            return false;
+        using HttpClient client = new();
+        var responseString = await client.GetStringAsync(_data.Portal.Address, token).ConfigureAwait(false);
+
+        // Return false if already logged in
+        if (responseString.Contains(_data.ValidationString, StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        // Do Login
+        if (_data.LoginIsMethodPost)
+        {
+            var response = await client.PostAsync(_data.Portal.Address, _data.EncodedParams, token).ConfigureAwait(false);
+            responseString = await response.Content.ReadAsStringAsync(token).ConfigureAwait(false);
+        }
+        else
+        {
+            responseString = await client.GetStringAsync(_data.Portal.Address + "?" + _data.EncodedParams, token);
+        }
+
+        // Determine if login succeeded, return
+        return responseString.Contains(_data.ValidationString, StringComparison.OrdinalIgnoreCase);
+    }
+}

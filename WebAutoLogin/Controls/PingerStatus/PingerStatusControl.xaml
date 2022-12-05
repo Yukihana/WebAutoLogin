@@ -1,0 +1,86 @@
+﻿<UserControl x:Class="Autologin.Controls.PingerStatus.PingerStatusControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:nqm="clr-namespace:Autologin.Controls.NetworkQualityMeter"
+             xmlns:local="clr-namespace:Autologin.Controls.PingerStatus"
+             mc:Ignorable="d" d:Background="White" d:Width="400"
+             d:DataContext="{d:DesignInstance Type=local:WebPinger, IsDesignTimeCreatable=True}">
+    <DockPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+            <TextBlock VerticalAlignment="Center" Margin="10 0">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="Foreground" Value="#08F" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding StabilityIndex}" Value="4">
+                                <Setter Property="Foreground" Value="#0BB" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding StabilityIndex}" Value="3">
+                                <Setter Property="Foreground" Value="#0B0" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding StabilityIndex}" Value="2">
+                                <Setter Property="Foreground" Value="#BB0" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding StabilityIndex}" Value="1">
+                                <Setter Property="Foreground" Value="#F80" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding StabilityIndex}" Value="0">
+                                <Setter Property="Foreground" Value="#800" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+                <TextBlock.ToolTip>
+                    <StackPanel>
+                        <TextBlock>
+                            <Run Text="Average:" FontWeight="Bold" />
+                            <Run Text="{Binding PingAverage}" />
+                        </TextBlock>
+                        <TextBlock>
+                            <Run Text="Minimum:" FontWeight="Bold" />
+                            <Run Text="{Binding PingMinimum}" />
+                        </TextBlock>
+                        <TextBlock>
+                            <Run Text="Maximum:" FontWeight="Bold" />
+                            <Run Text="{Binding PingMaximum}" />
+                        </TextBlock>
+                        <TextBlock>
+                            <Run Text="Jitter:" FontWeight="Bold" />
+                            <Run Text="{Binding PingJitter}" />
+                        </TextBlock>
+                    </StackPanel>
+                </TextBlock.ToolTip>
+                <Run Text="{Binding PingTime}" />
+                <Run Text="ms" />
+            </TextBlock>
+            <nqm:NetworkQualityMeterControl Quality="{Binding StabilityIndex}"
+                                            Height="24" Width="24">
+                <nqm:NetworkQualityMeterControl.ToolTip>
+                    <StackPanel>
+                        <TextBlock>
+                            <Run Text="Quality:" FontWeight="Bold" />
+                            <Run Text="{Binding Stability}" />
+                            <Run Text="%" />
+                        </TextBlock>
+                        <TextBlock>
+                            <Run Text="Pings recovered:" />
+                            <Run Text="{Binding PingSuccessCount}" />
+                            <Run Text="out of" />
+                            <Run Text="{Binding PingCount}" />
+                        </TextBlock>
+                    </StackPanel>
+                </nqm:NetworkQualityMeterControl.ToolTip>
+            </nqm:NetworkQualityMeterControl>
+        </StackPanel>
+        <DockPanel ToolTip="{Binding Address}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10 0">
+            <TextBlock DockPanel.Dock="Right">
+                <Run Text="(" />
+                <Run Text="{Binding HostType}" />
+                <Run Text=")" />
+            </TextBlock>
+            <TextBlock Text="{Binding Address}" TextTrimming="CharacterEllipsis" />
+        </DockPanel>
+    </DockPanel>
+</UserControl>
