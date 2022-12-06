@@ -1,9 +1,9 @@
-﻿using Autologin.Types;
+﻿using WALConnector.Types;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AutoLoginConnector.Services.PingStats;
+namespace WALConnector.Services.PingStats;
 
 // Make this an extension class that uses PingStatsData as the input
 internal static class PingStatsService

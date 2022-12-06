@@ -2,7 +2,7 @@
 using System.Drawing;
 using NotifyIcon = Hardcodet.Wpf.TaskbarNotification.TaskbarIcon;
 
-namespace Autologin.TrayHandler;
+namespace WebAutoLogin.TrayHandler;
 
 internal class TrayAgent
 {

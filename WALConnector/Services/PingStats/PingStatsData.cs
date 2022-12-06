@@ -1,11 +1,11 @@
-﻿using Autologin.Types;
+﻿using WALConnector.Types;
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace AutoLoginConnector.Services.PingStats;
+namespace WALConnector.Services.PingStats;
 
 public class PingStatsData
 {

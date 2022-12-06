@@ -1,4 +1,4 @@
-﻿namespace AutoLoginConnector.Services.PingStats;
+﻿namespace WALConnector.Services.PingStats;
 
 internal class PingOptions
 {

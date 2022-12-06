@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json;
 
-namespace Autologin.Helpers;
+namespace WALConnector.Helpers;
 
 internal static class StandardHelper
 {

@@ -1,6 +1,6 @@
-﻿namespace AutoLoginConnector.Types;
+﻿namespace WALConnector.Types;
 
-public enum LoginMode : byte
+public enum LoginBehaviour : byte
 {
     Disabled = 0,
     OnDisconnected = 1,

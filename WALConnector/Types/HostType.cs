@@ -1,4 +1,4 @@
-﻿namespace Autologin.Types;
+﻿namespace WALConnector.Types;
 
 public enum HostType : byte
 {

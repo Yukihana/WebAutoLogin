@@ -1,7 +1,7 @@
-﻿using Autologin.Helpers;
-using AutoLoginConnector.Services.Configuration;
-using AutoLoginConnector.Services.PingStats;
-using AutoLoginConnector.Types;
+﻿using WALConnector.Helpers;
+using WALConnector.Services.Configuration;
+using WALConnector.Services.PingStats;
+using WALConnector.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AutoLoginConnector.Services.Connector;
+namespace WALConnector.Services.Connector;
 
 /// <summary>
 /// The connection logic routine is coordinated here.
@@ -28,11 +28,16 @@ public class ConnectorService
 
     public Action? OnLoginSucceeded;
 
-    public async Task Initialize()
+    public async Task<bool> Initialize()
     {
         if (await ConfigurationService.Load() is LoginConfig config)
-            config.ApplyTo(_data);
-        TryStart();
+        {
+            _data.ApplyFrom(config);
+            _data.Initialize();
+            await TryStart().ConfigureAwait(false);
+            return true;
+        }
+        return false;
     }
     public void Decouple()
     {
@@ -41,25 +46,23 @@ public class ConnectorService
         OnLoginSucceeded = null;
     }
 
-    public void TryStart()
+    public async Task TryStart()
     {
-        Task.Run(async () =>
-        {
-            await EndRoutine().ConfigureAwait(false);
-            await StartRoutine();
-        });
+        await EndRoutine().ConfigureAwait(false);
+        await StartRoutine().ConfigureAwait(false);
     }
 
     public void TryEnd()
         => Task.Run(EndRoutine);
 
+    // Rewrite this method to include initialize. Let it be big, unify config into it but also add breakout and terminate.
     private async Task StartRoutine()
     {
         var config = await ConfigurationService.Load();
         if (config == null)
             return;
-        config.ApplyTo(_data);
-        if (_data.LoginMode != LoginMode.Disabled && !_data.Validate())
+        _data.ApplyFrom(config);
+        if (_data.LoginBehaviour != LoginBehaviour.Disabled && !_data.Validate())
             return;
         _ctSource = new CancellationTokenSource();
         _task = Task.Factory.StartNew(async ()
@@ -78,8 +81,8 @@ public class ConnectorService
 
     public async Task ManageAsync(CancellationToken token = default)
     {
-        int pingInterval = _data.PingInterval;
-        int loginMultiplier = _data.LoginMultiplier;
+        int pingInterval = _data.PingPollInterval;
+        int loginMultiplier = _data.LoginPollMultiplier;
         int pingIntervalCounter = 0;
         int loginMultiplierCounter = 0;
         bool lastConnected, loginSuccess;
@@ -108,11 +111,11 @@ public class ConnectorService
             loginMultiplierCounter = 0;
 
             // Logins
-            if (_data.LoginMode == LoginMode.Disabled)
+            if (_data.LoginBehaviour == LoginBehaviour.Disabled)
                 continue;
             lastConnected = IsConnected();
             loginSuccess = false;
-            if (!lastConnected || _data.LoginMode == LoginMode.Always)
+            if (!lastConnected || _data.LoginBehaviour == LoginBehaviour.Always)
             {
                 loginSuccess = await AttemptLogin(token); //returns false if already logged in or failed
             }
@@ -137,7 +140,7 @@ public class ConnectorService
             pingList.Add(_data.Portal.SendPing(_data.Options, token));
 
         pingList.AddRange(_data.Destinations.Select(x => x.SendPing(_data.Options, token)));
-        pingList.AddRange(_data.CustomNICs.Select(x => x.SendPing(_data.Options, token)));
+        pingList.AddRange(_data.Nodes.Select(x => x.SendPing(_data.Options, token)));
 
         await Task.WhenAll(pingList);
     }
@@ -157,7 +160,7 @@ public class ConnectorService
             return false;
 
         // Do Login
-        if (_data.LoginIsMethodPost)
+        if (_data.LoginMethodIsPost)
         {
             var response = await client.PostAsync(_data.Portal.Address, _data.EncodedParams, token).ConfigureAwait(false);
             responseString = await response.Content.ReadAsStringAsync(token).ConfigureAwait(false);

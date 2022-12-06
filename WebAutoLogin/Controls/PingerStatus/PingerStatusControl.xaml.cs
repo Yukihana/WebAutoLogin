@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Autologin.Controls.PingerStatus
+namespace WebAutoLogin.Controls.PingerStatus
 {
     /// <summary>
     /// Interaction logic for PingerStatusControl.xaml

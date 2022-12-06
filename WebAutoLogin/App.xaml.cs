@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Autologin;
+namespace WebAutoLogin;
 
 /// <summary>
 /// Interaction logic for App.xaml

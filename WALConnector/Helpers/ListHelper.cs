@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Autologin.Helpers;
+namespace WALConnector.Helpers;
 
 internal class ListHelper
 {

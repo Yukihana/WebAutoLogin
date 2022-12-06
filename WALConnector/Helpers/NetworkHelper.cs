@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net.NetworkInformation;
 
-namespace Autologin.Helpers;
+namespace WALConnector.Helpers;
 
 internal static class NetworkHelper
 {

@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Autologin.StatsUI;
+namespace WebAutoLogin.StatsUI;
 
 /// <summary>
 /// Interaction logic for StatsView.xaml

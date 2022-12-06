@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace Autologin.Controls.NetworkQualityMeter;
+namespace WebAutoLogin.Controls.NetworkQualityMeter;
 
 [ObservableObject]
 internal partial class NetworkQualityMeterLogic

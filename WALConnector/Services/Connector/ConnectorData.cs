@@ -1,48 +1,32 @@
-﻿using AutoLoginConnector.Services.PingStats;
-using AutoLoginConnector.Types;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.Net.Http;
+using WALConnector.Services.PingStats;
+using WALConnector.Types;
 
-namespace AutoLoginConnector.Services.Connector;
+namespace WALConnector.Services.Connector;
 
 internal class ConnectorData
 {
-    public event PropertyChangedEventHandler? PropertyChanged;
-
     public PingOptions? Options { get; set; } = new();
+    internal bool ConfigChanged { get; set; } = false;
+    internal List<string> AvailableNICs { get; set; } = new();
 
+    internal PingStatsData? Gateway { get; set; }
+    internal PingStatsData? Portal { get; set; }
+    internal List<PingStatsData> Destinations { get; set; } = new();
+    internal List<PingStatsData> Nodes { get; set; } = new();
 
+    internal List<KeyValuePair<string, string>> Credentials { get; set; } = new();
+    internal FormUrlEncodedContent EncodedParams { get; set; } = new(new List<KeyValuePair<string, string>>());
+    internal bool LoginMethodIsPost { get; set; } = true;
+    internal string ValidationString { get; set; } = string.Empty;
 
-    private LoginMode loginMode = LoginMode.OnDisconnected;
-    private PingStatsData? gateway;
-    private PingStatsData? portal;
-    private List<PingStatsData> destinations = new();
-    private List<PingStatsData> customNICs = new();
-    private List<string> availableNICs = new();
-    private List<KeyValuePair<string, string>> credentials = new();
-    private FormUrlEncodedContent encodedParams = new(new List<KeyValuePair<string, string>>());
-    private bool methodIsPost = true;
-    private string validationString = string.Empty;
-    private bool configChanged = false;
-    private int pingInterval = 15;
-    private int loginMultiplier = 20;
+    internal int PingPollInterval { get; set; } = 15;
+    internal PingGroupPollingMode DestinationPollingMode { get; set; } = PingGroupPollingMode.SeriallyAlternated;
+    internal int PingTimeout { get; set; } = 1000;
+    internal int MaximumPingsCount { get; set; } = 100;
 
-
-
-
-
-    internal LoginMode LoginMode { get => loginMode; set => loginMode = value; }
-    internal PingStatsData? Gateway { get => gateway; set => gateway = value; }
-    internal PingStatsData? Portal { get => portal; set => portal = value; }
-    internal List<PingStatsData> Destinations { get => destinations; set => destinations = value; }
-    internal List<PingStatsData> CustomNICs { get => customNICs; set => customNICs = value; }
-    internal List<string> AvailableNICs { get => availableNICs; set => availableNICs = value; }
-    internal List<KeyValuePair<string, string>> Credentials { get => credentials; set => credentials = value; }
-    internal FormUrlEncodedContent EncodedParams { get => encodedParams; set => encodedParams = value; }
-    internal bool LoginIsMethodPost { get => methodIsPost; set => methodIsPost = value; }
-    internal string ValidationString { get => validationString; set => validationString = value; }
-    internal bool ConfigChanged { get => configChanged; set => configChanged = value; }
-    internal int PingInterval { get => pingInterval; set => pingInterval = value; }
-    internal int LoginMultiplier { get => loginMultiplier; set=> loginMultiplier = value; }
+    internal int LoginPollMultiplier { get; set; } = 20;
+    internal LoginBehaviour LoginBehaviour { get; set; } = LoginBehaviour.OnDisconnected;
+    internal int LoginTimeout { get; set; } = 1000;
 }

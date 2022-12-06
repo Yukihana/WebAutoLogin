@@ -1,11 +1,10 @@
-﻿using Autologin.StatsUI;
-using Autologin.TrayHandler;
-using AutoLoginConnector.Services.Configuration;
-using AutoLoginConnector.Services.Connector;
+﻿using WebAutoLogin.StatsUI;
+using WebAutoLogin.TrayHandler;
+using WALConnector.Services.Connector;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Autologin;
+namespace WebAutoLogin;
 
 internal class ProgramContext
 {

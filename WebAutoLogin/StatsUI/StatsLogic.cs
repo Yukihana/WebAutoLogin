@@ -1,6 +1,6 @@
-﻿using AutoLoginConnector.Services.Connector;
+﻿using WALConnector.Services.Connector;
 
-namespace Autologin.StatsUI;
+namespace WebAutoLogin.StatsUI;
 
 public partial class StatsLogic
 {

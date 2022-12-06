@@ -1,7 +1,7 @@
-﻿using Autologin.Types;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using WALConnector.Types;
 
-namespace Autologin.Controls.PingerStatus;
+namespace WebAutoLogin.Controls.PingerStatus;
 
 [ObservableObject]
 public partial class PingerStatusControlData

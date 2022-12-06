@@ -1,4 +1,4 @@
-﻿namespace AutoLoginConnector.Handlers;
+﻿namespace WALConnector.Handlers;
 
 public interface IConnectorStats
 {

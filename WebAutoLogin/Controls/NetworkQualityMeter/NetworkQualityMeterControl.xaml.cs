@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace Autologin.Controls.NetworkQualityMeter;
+namespace WebAutoLogin.Controls.NetworkQualityMeter;
 
 /// <summary>
 /// Interaction logic for NetworkQualityMeter.xaml
