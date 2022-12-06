@@ -11,7 +11,6 @@ public class PingStatsData
 {
     // Service data
 
-    internal PingOptions Options { get; set; } = new();
     internal List<long> Pings { get; set; } = new();
     internal List<long> SucceededPings { get; set; } = new();
 
@@ -19,7 +18,7 @@ public class PingStatsData
 
     public string Address { get; set; } = string.Empty;
     public HostType HostType { get; set; } = HostType.None;
-    public long PingLatency => Pings[^1];
+    public long LastPing => Pings.Count > 0 ? Pings[^1] : -1;
 
     // Poll Statistics
 

@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using WALConnector.Services.Logger;
+using System.Net.NetworkInformation;
 
 namespace WALConnector.Services.Connector;
 
@@ -21,6 +22,7 @@ public class ConnectorService
     private readonly LoggerService _logger = new("log.txt");
     private readonly ConnectorData _data = new();
     private CancellationTokenSource _ctSource = new();
+    public bool IsDebug { get; set; } = true;
 
     private Task? _task = null;
 
@@ -75,9 +77,10 @@ public class ConnectorService
     {
         int pingInterval = _data.PingPollInterval;
         int loginMultiplier = _data.LoginPollMultiplier;
-        int pingIntervalCounter = 0;
-        int loginMultiplierCounter = 0;
-        bool lastConnected, loginSuccess;
+        int pingIntervalCounter = int.MaxValue;
+        int loginMultiplierCounter = int.MaxValue;
+        bool lastConnected;
+        bool? loginSuccess;
 
         while (!token.IsCancellationRequested)
         {
@@ -90,9 +93,19 @@ public class ConnectorService
             }
             pingIntervalCounter = 0;
 
+            if (IsDebug)
+                _logger.LogThis("Starting ping polling cycle");
+
             // Pings
-            await PollPings(token);
+            await PollAllTargets(token);
             _ = Task.Run(()=>OnPingsPolled?.Invoke(), CancellationToken.None);
+
+            // Process Login conditions
+            if (_data.LoginBehaviour == LoginBehaviour.Disabled)
+                continue;
+            lastConnected = IsConnected();
+            if (lastConnected && _data.LoginBehaviour == LoginBehaviour.OnDisconnected)
+                continue;
 
             // Login wait cycle
             if (loginMultiplierCounter < loginMultiplier)
@@ -103,66 +116,108 @@ public class ConnectorService
             loginMultiplierCounter = 0;
 
             // Logins
-            if (_data.LoginBehaviour == LoginBehaviour.Disabled)
-                continue;
-            lastConnected = IsConnected();
             loginSuccess = false;
             if (!lastConnected || _data.LoginBehaviour == LoginBehaviour.Always)
-            {
                 loginSuccess = await AttemptLogin(token); //returns false if already logged in or failed
-            }
             _ = Task.Run(() => OnLoginAttempted?.Invoke(), CancellationToken.None);
 
+            if(IsDebug && loginSuccess == null)
+                _logger.LogThis("Login failed.");
+
             // Poll destinations once more if connected state changed
-            if (!lastConnected && loginSuccess)
+            if (!lastConnected && loginSuccess == true)
             {
-                await PollPings(token);
-                _ = Task.Run(() => OnLoginSucceeded ?.Invoke(), CancellationToken.None);
+                await PollAllTargets(token);
+                _ = Task.Run(() => OnLoginSucceeded?.Invoke(), CancellationToken.None);
             }
         }
     }
 
-    private async Task PollPings(CancellationToken token = default)
+    private async Task PollAllTargets(CancellationToken token = default)
     {
-        List<Task> pingList = new();
+        if(token.IsCancellationRequested) return;
 
+        List<PingStatsData> pingTargets = new();
         if (_data.Gateway != null)
-            pingList.Add( _data.Gateway.SendPing(_data.Options, token));
+            pingTargets.Add(_data.Gateway);
         if (_data.Portal != null)
-            pingList.Add(_data.Portal.SendPing(_data.Options, token));
+            pingTargets.Add(_data.Portal);
 
-        pingList.AddRange(_data.Destinations.Select(x => x.SendPing(_data.Options, token)));
-        pingList.AddRange(_data.Nodes.Select(x => x.SendPing(_data.Options, token)));
+        if (_data.Destinations.Count > 0)
+        {
+            if (_data.DestinationPollingMode == PingGroupPollingMode.SeriallyAlternated)
+            {
+                pingTargets.Add(_data.Destinations[_data.DestinationIndex]);
 
-        await Task.WhenAll(pingList);
+                _data.DestinationIndex++;
+                if (_data.DestinationIndex > _data.Destinations.Count)
+                    _data.DestinationIndex = 0;
+            }
+            else
+            {
+                pingTargets.AddRange(_data.Destinations);
+            }
+        }
+
+        pingTargets.AddRange(_data.Nodes);
+
+        int timeout = _data.PingTimeout;
+        int maxPings = _data.MaximumPingsCount;
+        await Parallel.ForEachAsync(pingTargets, async (x, ctoken) => await PollTarget(x, timeout, maxPings, ctoken));
+    }
+    private async Task PollTarget(PingStatsData data, int timeout, int maxPings, CancellationToken token = default)
+    {
+        try
+        {
+            using Ping P = new();
+            PingReply reply = await P.SendPingAsync(data.Address, timeout);
+            await Task.Run(() => data.UpdateHistory(reply.RoundtripTime, maxPings), token);
+
+            if (!IsDebug)
+                return;
+
+            if (reply != null)
+                _logger.LogThis($"Ping {data.Address} [{reply.Address}] => {data.LastPing} ms");
+        }
+        catch
+        {
+            _logger.LogThis($"Ping ({data.Address}) => Error!!!");
+        }
     }
 
     private bool IsConnected() =>
-        _data.Destinations.Any(x => x.PingLatency != -1);
+        _data.Destinations.Any(x => x.LastPing != -1);
 
-    public async Task<bool> AttemptLogin(CancellationToken token)
+    public async Task<bool?> AttemptLogin(CancellationToken token)
     {
-        if (_data.Portal == null || string.IsNullOrEmpty(_data.Portal.Address))
-            return false;
-        using HttpClient client = new();
-        var responseString = await client.GetStringAsync(_data.Portal.Address, token).ConfigureAwait(false);
-
-        // Return false if already logged in
-        if (responseString.Contains(_data.ValidationString, StringComparison.OrdinalIgnoreCase))
-            return false;
-
-        // Do Login
-        if (_data.LoginMethodIsPost)
+        try
         {
-            var response = await client.PostAsync(_data.Portal.Address, _data.EncodedParams, token).ConfigureAwait(false);
-            responseString = await response.Content.ReadAsStringAsync(token).ConfigureAwait(false);
-        }
-        else
-        {
-            responseString = await client.GetStringAsync(_data.Portal.Address + "?" + _data.EncodedParams, token);
-        }
+            if (_data.Portal == null || string.IsNullOrEmpty(_data.Portal.Address))
+                return false;
+            using HttpClient client = new();
+            var responseString = await client.GetStringAsync(_data.Portal.Address, token).ConfigureAwait(false);
 
-        // Determine if login succeeded, return
-        return responseString.Contains(_data.ValidationString, StringComparison.OrdinalIgnoreCase);
+            // Return false if already logged in
+            if (responseString.Contains(_data.ValidationString, StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            // Do Login
+            if (_data.LoginMethodIsPost)
+            {
+                var response = await client.PostAsync(_data.Portal.Address, _data.EncodedParams, token).ConfigureAwait(false);
+                responseString = await response.Content.ReadAsStringAsync(token).ConfigureAwait(false);
+            }
+            else
+            {
+                responseString = await client.GetStringAsync(_data.Portal.Address + "?" + _data.EncodedParams, token);
+            }
+
+            // Determine if login succeeded, return
+            return responseString.Contains(_data.ValidationString, StringComparison.OrdinalIgnoreCase);
+        }
+        catch
+        {
+            return null;
+        }
     }
 }

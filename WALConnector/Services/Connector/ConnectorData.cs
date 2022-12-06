@@ -7,9 +7,9 @@ namespace WALConnector.Services.Connector;
 
 internal class ConnectorData
 {
-    public PingOptions? Options { get; set; } = new();
     internal bool ConfigChanged { get; set; } = false;
     internal List<string> AvailableNICs { get; set; } = new();
+    internal int DestinationIndex { get; set; } = 0;
 
     internal PingStatsData? Gateway { get; set; }
     internal PingStatsData? Portal { get; set; }

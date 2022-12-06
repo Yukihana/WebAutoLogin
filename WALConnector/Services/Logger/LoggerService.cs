@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using WALConnector.Helpers;
 
 namespace WALConnector.Services.Logger;
 
@@ -27,27 +26,41 @@ internal class LoggerService
     {
         _lock.EnterWriteLock();
         _logs.Add(GetTimeStamp() + " : " + message);
-        var guid = Guid.NewGuid().ToString();
-        _guid = guid.DeepClone();
+        _guid = Guid.NewGuid().ToString();
         _lock.ExitWriteLock();
 
-        Task.Run(async () => await StartDelayedLogger(guid));
+        Task.Run(async () => await StartDelayedFlush(_guid));
     }
 
-    private async Task StartDelayedLogger(string guid)
+    private async Task StartDelayedFlush(string guid)
     {
-        _lock.EnterWriteLock();
         await Task.Delay(_delay);
-        if(guid.Equals(_guid, StringComparison.OrdinalIgnoreCase))
+        Task? task = null;
+
+        try
         {
-            await File.AppendAllLinesAsync(_logPath, _logs);
+            _lock.EnterWriteLock();
+
+            if (!guid.Equals(_guid))
+                return;
+
+            List<string> buffer = new(_logs);
             _logs.Clear();
+            task = File.AppendAllLinesAsync(_logPath, buffer);
         }
-        _lock.ExitWriteLock();
+        finally
+        {
+            _lock.ExitWriteLock();
+        }
+
+        if(task != null)
+        {
+            // awaited later to release the lock faster
+            task.Start();
+            await task;
+        }
     }
 
     private static string GetTimeStamp()
-    {
-        return DateTime.Now.ToString();
-    }
+        => DateTime.Now.ToString("yyyy.MM.dd_HH:mm:ss.fff");
 }

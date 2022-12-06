@@ -39,11 +39,6 @@ internal static class SetupHelper
 
     internal static void Initialize(this ConnectorData data)
     {
-        data.Options = new()
-        {
-            MaximumPingsCount = data.MaximumPingsCount,
-            Timeout = data.PingTimeout,
-        };
         data.AvailableNICs = NetworkHelper.GetNICAddresses();
     }
 }
