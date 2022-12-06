@@ -28,48 +28,30 @@ public class ConnectorService
 
     public Action? OnLoginSucceeded;
 
-    public async Task<bool> Initialize()
-    {
-        if (await ConfigurationService.Load() is LoginConfig config)
-        {
-            _data.ApplyFrom(config);
-            _data.Initialize();
-            await TryStart().ConfigureAwait(false);
-            return true;
-        }
-        return false;
-    }
-    public void Decouple()
-    {
-        OnPingsPolled = null;
-        OnLoginAttempted = null;
-        OnLoginSucceeded = null;
-    }
-
-    public async Task TryStart()
-    {
-        await EndRoutine().ConfigureAwait(false);
-        await StartRoutine().ConfigureAwait(false);
-    }
-
-    public void TryEnd()
-        => Task.Run(EndRoutine);
-
-    // Rewrite this method to include initialize. Let it be big, unify config into it but also add breakout and terminate.
-    private async Task StartRoutine()
+    public async Task<bool> Start()
     {
         var config = await ConfigurationService.Load();
         if (config == null)
-            return;
+            return false;
+
+        // Stop running task
+        await Stop().ConfigureAwait(false);
+
+        // Load new config values
         _data.ApplyFrom(config);
-        if (_data.LoginBehaviour != LoginBehaviour.Disabled && !_data.Validate())
-            return;
+        _data.Initialize();
+        if (_data.LoginBehaviour == LoginBehaviour.Disabled && !_data.Validate())
+            return false;
+
+        // Setup new routine
         _ctSource = new CancellationTokenSource();
         _task = Task.Factory.StartNew(async ()
             => await ManageAsync(_ctSource.Token).ConfigureAwait(false),
             TaskCreationOptions.LongRunning);
+
+        return true;
     }
-    private async Task EndRoutine()
+    public async Task Stop()
     {
         if (_task != null)
         {
@@ -77,6 +59,12 @@ public class ConnectorService
             await _task;
             _task = null;
         }
+    }
+    public void Decouple()
+    {
+        OnPingsPolled = null;
+        OnLoginAttempted = null;
+        OnLoginSucceeded = null;
     }
 
     public async Task ManageAsync(CancellationToken token = default)

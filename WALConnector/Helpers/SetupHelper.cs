@@ -1,8 +1,7 @@
-﻿using WALConnector.Services.Configuration;
+﻿using System.Linq;
+using WALConnector.Services.Configuration;
 using WALConnector.Services.Connector;
 using WALConnector.Services.PingStats;
-using System.Linq;
-using Microsoft.VisualBasic;
 
 namespace WALConnector.Helpers;
 
@@ -16,6 +15,7 @@ internal static class SetupHelper
             return false;
         return true;
     }
+
     internal static void ApplyFrom(this ConnectorData data, LoginConfig config)
     {
         data.Gateway = new() { Address = config.Gateway };
@@ -36,6 +36,7 @@ internal static class SetupHelper
         data.LoginBehaviour = config.LoginBehaviour;
         data.LoginTimeout = config.LoginTimeout;
     }
+
     internal static void Initialize(this ConnectorData data)
     {
         data.Options = new()

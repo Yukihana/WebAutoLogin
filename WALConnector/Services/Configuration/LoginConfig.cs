@@ -1,5 +1,5 @@
-﻿using WALConnector.Types;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using WALConnector.Types;
 
 namespace WALConnector.Services.Configuration;
 
@@ -20,6 +20,7 @@ public class LoginConfig
         new("pass","password"),
         new("login", "Login")
     };
+
     public bool LoginMethodIsPost { get; set; } = true;
     public string ValidationString { get; set; } = "ClientID";
 

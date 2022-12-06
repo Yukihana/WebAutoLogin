@@ -1,15 +1,13 @@
-﻿using WALConnector.Services.Connector;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-using WALConnector.Services.PingStats;
 
 namespace WALConnector.Services.Configuration;
 
 public static class ConfigurationService
 {
     private const string ConfigFilename = "logininfo.cfg";
+
     private static readonly JsonSerializerOptions _options = new()
     {
         WriteIndented = true,

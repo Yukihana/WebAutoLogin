@@ -23,8 +23,17 @@ internal class ProgramContext
     // Setup services async
     internal async Task InitializeAsync()
     {
-        await _connectorService.Initialize();
-        await Application.Current.Dispatcher.BeginInvoke(CompleteInitialization);
+        var success = await _connectorService.Start();
+        if (success)
+            await Application.Current.Dispatcher.BeginInvoke(CompleteInitialization);
+        else
+        {
+            await Application.Current.Dispatcher.BeginInvoke(() =>
+            {
+                FirstRun();
+                Shutdown();
+            });
+        }
     }
 
     // Initialize UI here
@@ -43,10 +52,13 @@ internal class ProgramContext
             _view.Closed += (sender, args) => Shutdown();
         }
     }
-
+    internal static void FirstRun()
+    {
+        MessageBox.Show("Unable to load config. This is probably the first run or the configuration is invalid.", "Startup Aborted", MessageBoxButton.OK, MessageBoxImage.Error);
+    }
     internal void Shutdown()
     {
-        _connectorService.TryEnd();
+        Task.Run(_connectorService.Stop);
         _view = null;
 
         _trayAgent.Unload();
