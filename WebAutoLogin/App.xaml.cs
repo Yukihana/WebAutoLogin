@@ -7,7 +7,7 @@ namespace WebAutoLogin;
 /// </summary>
 public partial class App : Application
 {
-    private ProgramContext ProgramContext { get; set; }
+    private WALContext ProgramContext { get; set; }
 
     public App() : base()
     {

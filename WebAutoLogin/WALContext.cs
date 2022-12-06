@@ -6,13 +6,13 @@ using System.Windows;
 
 namespace WebAutoLogin;
 
-internal class ProgramContext
+internal class WALContext
 {
     private readonly ConnectorService _connectorService;
     private readonly TrayAgent _trayAgent;
     private StatsView? _view;
 
-    public ProgramContext()
+    public WALContext()
     {
         _connectorService = new();
         _trayAgent = new();

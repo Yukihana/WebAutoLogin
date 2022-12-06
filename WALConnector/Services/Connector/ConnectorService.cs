@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using WALConnector.Services.Logger;
 
 namespace WALConnector.Services.Connector;
 
@@ -17,6 +18,7 @@ namespace WALConnector.Services.Connector;
 /// </summary>
 public class ConnectorService
 {
+    private readonly LoggerService _logger = new("log.txt");
     private readonly ConnectorData _data = new();
     private CancellationTokenSource _ctSource = new();
 
@@ -49,6 +51,7 @@ public class ConnectorService
             => await ManageAsync(_ctSource.Token).ConfigureAwait(false),
             TaskCreationOptions.LongRunning);
 
+        _logger.LogThis("Started the connector service.");
         return true;
     }
     public async Task Stop()
@@ -57,6 +60,7 @@ public class ConnectorService
         {
             _ctSource.Cancel();
             await _task;
+            _logger.LogThis("Stopped the connector service.");
             _task = null;
         }
     }
