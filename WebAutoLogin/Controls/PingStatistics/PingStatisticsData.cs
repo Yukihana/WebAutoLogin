@@ -1,10 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using WALConnector.Types;
 
-namespace WebAutoLogin.StatsUI;
+namespace WebAutoLogin.Controls.PingStatistics;
 
 [ObservableObject]
-public partial class StatsPingInfo
+public partial class PingStatisticsData
 {
     // Main Panel Info
 

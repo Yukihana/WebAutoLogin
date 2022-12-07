@@ -5,28 +5,28 @@ using WALConnector.Types;
 
 namespace WALConnector.Services.Connector;
 
-internal class ConnectorData
+public class ConnectorData
 {
-    internal bool ConfigChanged { get; set; } = false;
-    internal List<string> AvailableNICs { get; set; } = new();
-    internal int DestinationIndex { get; set; } = 0;
+    public bool ConfigChanged { get; internal set; } = false;
+    public List<string> AvailableNICs { get; internal set; } = new();
+    public int DestinationIndex { get; internal set; } = 0;
 
-    internal PingStatsData? Gateway { get; set; }
-    internal PingStatsData? Portal { get; set; }
-    internal List<PingStatsData> Destinations { get; set; } = new();
-    internal List<PingStatsData> Nodes { get; set; } = new();
+    public PingStatsData? Gateway { get; internal set; }
+    public PingStatsData? Portal { get; internal set; }
+    public List<PingStatsData> Destinations { get; internal set; } = new();
+    public List<PingStatsData> Nodes { get; internal set; } = new();
 
-    internal List<KeyValuePair<string, string>> Credentials { get; set; } = new();
-    internal FormUrlEncodedContent EncodedParams { get; set; } = new(new List<KeyValuePair<string, string>>());
-    internal bool LoginMethodIsPost { get; set; } = true;
-    internal string ValidationString { get; set; } = string.Empty;
+    public List<KeyValuePair<string, string>> Credentials { get; internal set; } = new();
+    public FormUrlEncodedContent EncodedParams { get; internal set; } = new(new List<KeyValuePair<string, string>>());
+    public bool LoginMethodIsPost { get; internal set; } = true;
+    public string ValidationString { get; internal set; } = string.Empty;
 
-    internal int PingPollInterval { get; set; } = 15;
-    internal PingGroupPollingMode DestinationPollingMode { get; set; } = PingGroupPollingMode.SeriallyAlternated;
-    internal int PingTimeout { get; set; } = 1000;
-    internal int MaximumPingsCount { get; set; } = 100;
+    public int PingPollInterval { get; internal set; } = 15;
+    public PingGroupPollingMode DestinationPollingMode { get; internal set; } = PingGroupPollingMode.SeriallyAlternated;
+    public int PingTimeout { get; internal set; } = 1000;
+    public int MaximumPingsCount { get; internal set; } = 100;
 
-    internal int LoginPollMultiplier { get; set; } = 20;
-    internal LoginBehaviour LoginBehaviour { get; set; } = LoginBehaviour.OnDisconnected;
-    internal int LoginTimeout { get; set; } = 1000;
+    public int LoginPollMultiplier { get; internal set; } = 20;
+    public LoginBehaviour LoginBehaviour { get; internal set; } = LoginBehaviour.OnDisconnected;
+    public int LoginTimeout { get; internal set; } = 1000;
 }

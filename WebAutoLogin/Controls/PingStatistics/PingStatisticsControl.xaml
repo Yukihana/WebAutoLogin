@@ -1,12 +1,12 @@
-﻿<UserControl x:Class="WebAutoLogin.Controls.PingerStatus.PingerStatusControl"
+﻿<UserControl x:Class="WebAutoLogin.Controls.PingStatistics.PingStatisticsControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:nqm="clr-namespace:WebAutoLogin.Controls.NetworkQualityMeter"
-             xmlns:local="clr-namespace:WebAutoLogin.Controls.PingerStatus"
+             xmlns:local="clr-namespace:WebAutoLogin.Controls.PingStatistics"
              mc:Ignorable="d" d:Background="White" d:Width="400"
-             d:DataContext="{d:DesignInstance Type=local:WebPinger, IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance Type=local:PingStatisticsData, IsDesignTimeCreatable=True}">
     <DockPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
             <TextBlock VerticalAlignment="Center" Margin="10 0">
@@ -39,12 +39,12 @@
                             <Run Text="{Binding PingAverage}" />
                         </TextBlock>
                         <TextBlock>
-                            <Run Text="Minimum:" FontWeight="Bold" />
-                            <Run Text="{Binding PingMinimum}" />
+                            <Run Text="Lowest:" FontWeight="Bold" />
+                            <Run Text="{Binding PingLowest}" />
                         </TextBlock>
                         <TextBlock>
-                            <Run Text="Maximum:" FontWeight="Bold" />
-                            <Run Text="{Binding PingMaximum}" />
+                            <Run Text="Highest:" FontWeight="Bold" />
+                            <Run Text="{Binding PingHighest}" />
                         </TextBlock>
                         <TextBlock>
                             <Run Text="Jitter:" FontWeight="Bold" />
@@ -52,7 +52,7 @@
                         </TextBlock>
                     </StackPanel>
                 </TextBlock.ToolTip>
-                <Run Text="{Binding PingTime}" />
+                <Run Text="{Binding LastRoundTripTime}" />
                 <Run Text="ms" />
             </TextBlock>
             <nqm:NetworkQualityMeterControl Quality="{Binding StabilityIndex}"
@@ -61,14 +61,14 @@
                     <StackPanel>
                         <TextBlock>
                             <Run Text="Quality:" FontWeight="Bold" />
-                            <Run Text="{Binding Stability}" />
+                            <Run Text="{Binding StabilityPercentString}" />
                             <Run Text="%" />
                         </TextBlock>
                         <TextBlock>
                             <Run Text="Pings recovered:" />
-                            <Run Text="{Binding PingSuccessCount}" />
+                            <Run Text="{Binding PingSuccesses}" />
                             <Run Text="out of" />
-                            <Run Text="{Binding PingCount}" />
+                            <Run Text="{Binding PingTotal}" />
                         </TextBlock>
                     </StackPanel>
                 </nqm:NetworkQualityMeterControl.ToolTip>

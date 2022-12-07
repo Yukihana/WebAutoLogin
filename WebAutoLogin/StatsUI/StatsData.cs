@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Collections.ObjectModel;
 using WALConnector.Types;
+using WebAutoLogin.Controls.PingStatistics;
 
 namespace WebAutoLogin.StatsUI;
 
@@ -26,16 +27,16 @@ public partial class StatsData
     // Ping Statistics
 
     [ObservableProperty]
-    private StatsPingInfo? _gateway = null;
+    private PingStatisticsData? _gateway = null;
 
     [ObservableProperty]
-    private StatsPingInfo? _portal = null;
+    private PingStatisticsData? _portal = null;
 
     [ObservableProperty]
-    private ObservableCollection<StatsPingInfo> _destinations = new();
+    private ObservableCollection<PingStatisticsData> _destinations = new();
 
     [ObservableProperty]
-    private ObservableCollection<StatsPingInfo> _nodes = new();
+    private ObservableCollection<PingStatisticsData> _nodes = new();
 
     // Additional Info
 

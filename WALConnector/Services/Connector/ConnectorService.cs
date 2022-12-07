@@ -19,12 +19,17 @@ namespace WALConnector.Services.Connector;
 /// </summary>
 public class ConnectorService
 {
-    private readonly LoggerService _logger = new("log.txt");
     private readonly ConnectorData _data = new();
+    public ConnectorData Data => _data;
+
+    private readonly LoggerService _logger = new("log.txt");
     private CancellationTokenSource _ctSource = new();
+
     public bool IsDebug { get; set; } = true;
 
     private Task? _task = null;
+
+    public Action? OnStarted;
 
     public Action? OnPingsPolled;
 
