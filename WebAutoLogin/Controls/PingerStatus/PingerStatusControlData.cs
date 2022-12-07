@@ -27,7 +27,7 @@ public partial class PingerStatusControlData
             return 0;
 
         // For internet domains
-        if (hostType == HostType.Internet)
+        if (hostType == HostType.Destination)
         {
             if (ping < pingAverage * 0.98)
                 return 1;

@@ -17,7 +17,7 @@ public class PingStatsData
     // Public data
 
     public string Address { get; set; } = string.Empty;
-    public HostType HostType { get; set; } = HostType.None;
+    public HostType HostType { get; set; } = HostType.Destination;
     public long LastPing => Pings.Count > 0 ? Pings[^1] : -1;
 
     // Poll Statistics
