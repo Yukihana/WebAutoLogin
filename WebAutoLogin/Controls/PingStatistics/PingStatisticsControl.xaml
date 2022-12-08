@@ -75,11 +75,7 @@
             </nqm:NetworkQualityMeterControl>
         </StackPanel>
         <DockPanel ToolTip="{Binding Address}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10 0">
-            <TextBlock DockPanel.Dock="Right">
-                <Run Text="(" />
-                <Run Text="{Binding HostType}" />
-                <Run Text=")" />
-            </TextBlock>
+            <TextBlock DockPanel.Dock="Right" Text="{Binding HostType}" Opacity="0.4" Margin="10 0 0 0"/>
             <TextBlock Text="{Binding Address}" TextTrimming="CharacterEllipsis" />
         </DockPanel>
     </DockPanel>

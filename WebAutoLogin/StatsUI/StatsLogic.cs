@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using WALConnector.Types;
 
 namespace WebAutoLogin.StatsUI;
@@ -6,6 +7,9 @@ namespace WebAutoLogin.StatsUI;
 [ObservableObject]
 public partial class StatsLogic
 {
+    internal void Loaded()
+        => PingUpdate();
+
     public void LoginUpdate()
     {
     }
@@ -59,4 +63,6 @@ public partial class StatsLogic
             return 5;
         return 6;
     }
+
+
 }

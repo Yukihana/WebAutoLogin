@@ -1,4 +1,6 @@
-﻿namespace WALConnector.Services.PingStats;
+﻿using System.Linq;
+
+namespace WALConnector.Services.PingStats;
 
 // Make this an extension class that uses PingStatsData as the input
 internal static class PingStatsService
@@ -8,5 +10,6 @@ internal static class PingStatsService
         data.Pings.Add(roundtripTime);
         while (data.Pings.Count > maxPings)
             data.Pings.Remove(0);
+        data.SucceededPings = data.Pings.Where(x => x != -1).ToList();
     }
 }

@@ -14,4 +14,7 @@ public partial class StatsView : Window
     }
 
     public readonly StatsLogic Logic = new();
+
+    private void Window_Loaded(object sender, RoutedEventArgs e)
+        => Logic.Loaded();
 }

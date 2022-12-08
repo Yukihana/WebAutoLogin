@@ -1,9 +1,7 @@
-﻿using WALConnector.Types;
-using CommunityToolkit.Mvvm.ComponentModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using WALConnector.Types;
 
 namespace WALConnector.Services.PingStats;
 
@@ -27,17 +25,12 @@ public class PingStatsData
 
     // Poll Analysis
 
-    public long PingMinimum => SucceededPings.Min();
-    public long PingMaximum => SucceededPings.Max();
-    public double PingAverage => SucceededPings.Average();
+    public long PingMinimum => SucceededPings.Count > 0 ? SucceededPings.Min() : -1;
+    public long PingMaximum => SucceededPings.Count > 0 ? SucceededPings.Max() : -1;
+    public double PingAverage => SucceededPings.Count > 0 ? SucceededPings.Average() : -1;
     public double PingJitter => Math.Round((PingMaximum - PingMinimum) / 2d, 2);
 
     // Grading
 
     public float Stability => PingsSuccessCount / (float)PingsTotalCount;
-
-    // Obsolete
-    public byte StabilityIndex = 0;
-
-    public byte _latencyIndex = 0;
 }

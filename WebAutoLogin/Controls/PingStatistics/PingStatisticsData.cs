@@ -32,10 +32,10 @@ public partial class PingStatisticsData
     private long _pingHighest = -1;
 
     [ObservableProperty]
-    private long _pingJitter = 0;
+    private double _pingJitter = 0;
 
     [ObservableProperty]
-    private long _pingAverage = -1;
+    private double _pingAverage = -1;
 
     // Quality Tooltip Info (Count, Succeeded, RTO, %stability)
 

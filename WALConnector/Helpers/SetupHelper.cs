@@ -2,6 +2,7 @@
 using WALConnector.Services.Configuration;
 using WALConnector.Services.Connector;
 using WALConnector.Services.PingStats;
+using WALConnector.Types;
 
 namespace WALConnector.Helpers;
 
@@ -18,10 +19,10 @@ internal static class SetupHelper
 
     internal static void ApplyFrom(this ConnectorData data, LoginConfig config)
     {
-        data.Gateway = new() { Address = config.Gateway };
-        data.Portal = new() { Address = config.Portal };
+        data.Gateway = new() { Address = config.Gateway, HostType = HostType.Gateway };
+        data.Portal = new() { Address = config.Portal, HostType = HostType.Portal };
         data.Destinations = new(config.Destinations.Select(x => new PingStatsData() { Address = x }));
-        data.Nodes = new(config.Nodes.Select(x => new PingStatsData() { Address = x }));
+        data.Nodes = new(config.Nodes.Select(x => new PingStatsData() { Address = x, HostType = HostType.Node }));
 
         data.Credentials = config.Credentials;
         data.LoginMethodIsPost = config.LoginMethodIsPost;

@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using System.Collections.ObjectModel;
 using WALConnector.Types;
 using WebAutoLogin.Controls.PingStatistics;
@@ -8,6 +9,12 @@ namespace WebAutoLogin.StatsUI;
 [ObservableObject]
 public partial class StatsData
 {
+    public StatsData()
+    {
+        _statistics.CollectionChanged += (sender, e) => PropertyChanged?.Invoke(sender, new(nameof(Statistics)));
+        _availableNICs.CollectionChanged += (sender, e) => PropertyChanged?.Invoke(sender, new(nameof(AvailableNICs)));
+    }
+
     // Quick Buttons
 
     [ObservableProperty]
@@ -25,6 +32,9 @@ public partial class StatsData
     private int _loginMultiplier = 20;
 
     // Ping Statistics
+
+    [ObservableProperty]
+    private ObservableCollection<PingStatisticsData> _statistics = new();
 
     [ObservableProperty]
     private PingStatisticsData? _gateway = null;

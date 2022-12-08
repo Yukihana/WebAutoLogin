@@ -17,7 +17,7 @@ public partial class StatsLogic
             _connectorService = value;
             if (_connectorService != null)
             {
-                _connectorService.OnPingsPolled = PingUpdate;
+                _connectorService.OnPingsPolled = PingUpdateThreadSafe;
                 _connectorService.OnLoginSucceeded = LoginUpdate;
             }
         }
