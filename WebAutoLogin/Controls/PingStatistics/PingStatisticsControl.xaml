@@ -3,10 +3,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:nqm="clr-namespace:WebAutoLogin.Controls.NetworkQualityMeter"
              xmlns:local="clr-namespace:WebAutoLogin.Controls.PingStatistics"
+             UseLayoutRounding="True" SnapsToDevicePixels="True"
              mc:Ignorable="d" d:Background="White" d:Width="400"
              d:DataContext="{d:DesignInstance Type=local:PingStatisticsData, IsDesignTimeCreatable=True}">
+    <UserControl.Resources>
+        <Style TargetType="{x:Type Border}" x:Key="SignalBar">
+            <Setter Property="Margin" Value="1" />
+            <Setter Property="CornerRadius" Value="2" />
+        </Style>
+    </UserControl.Resources>
     <DockPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
             <TextBlock VerticalAlignment="Center" Margin="10 0">
@@ -55,24 +61,65 @@
                 <Run Text="{Binding LastRoundTripTime}" />
                 <Run Text="ms" />
             </TextBlock>
-            <nqm:NetworkQualityMeterControl Quality="{Binding StabilityIndex}"
-                                            Height="24" Width="24">
-                <nqm:NetworkQualityMeterControl.ToolTip>
+            <Grid Height="24" Width="24" Margin="5">
+                <Grid.ToolTip>
                     <StackPanel>
                         <TextBlock>
                             <Run Text="Quality:" FontWeight="Bold" />
-                            <Run Text="{Binding StabilityPercentString}" />
-                            <Run Text="%" />
-                        </TextBlock>
-                        <TextBlock>
-                            <Run Text="Pings recovered:" />
-                            <Run Text="{Binding PingSuccesses}" />
+                            <Run Text="{Binding Stability}" />
                             <Run Text="out of" />
                             <Run Text="{Binding PingTotal}" />
+                            <Run Text="pings." />
+                        </TextBlock>
+                        <TextBlock>
+                            <Run Text="Successes:" FontWeight="Bold" />
+                            <Run Text="{Binding PingSuccesses}" />
+                        </TextBlock>
+                        <TextBlock>
+                            <Run Text="Timed out:" FontWeight="Bold" />
+                            <Run Text="{Binding PingSuccesses}" />
                         </TextBlock>
                     </StackPanel>
-                </nqm:NetworkQualityMeterControl.ToolTip>
-            </nqm:NetworkQualityMeterControl>
+                </Grid.ToolTip>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="2"
+                        Style="{StaticResource SignalBar}">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Offset="0" Color="{Binding Bar1ColorA}"/>
+                            <GradientStop Offset="0" Color="{Binding Bar1ColorB}"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
+                <Border Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"
+                        Style="{StaticResource SignalBar}">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Offset="0" Color="{Binding Bar2ColorA}"/>
+                            <GradientStop Offset="0" Color="{Binding Bar2ColorB}"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
+                <Border Grid.Column="2" Grid.Row="0" Grid.RowSpan="3"
+                        Style="{StaticResource SignalBar}">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Offset="0" Color="{Binding Bar3ColorA}"/>
+                            <GradientStop Offset="0" Color="{Binding Bar3ColorB}"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
+            </Grid>
         </StackPanel>
         <DockPanel ToolTip="{Binding Address}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10 0">
             <TextBlock DockPanel.Dock="Right" Text="{Binding HostType}" Opacity="0.4" Margin="10 0 0 0"/>

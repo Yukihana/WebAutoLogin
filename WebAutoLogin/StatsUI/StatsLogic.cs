@@ -14,20 +14,7 @@ public partial class StatsLogic
     {
     }
 
-    private static byte DetermineQualityIndex(float pingQuality)
-    {
-        if (pingQuality == 1)
-            return 1;
-        if (pingQuality > 0.97)
-            return 2;
-        if (pingQuality > 0.9)
-            return 3;
-        if (pingQuality > 0.75)
-            return 4;
-        if (pingQuality > 0)
-            return 5;
-        return 0;
-    }
+
 
     private static byte DetermineLatencyIndex(long ping, double pingAverage, HostType hostType)
     {

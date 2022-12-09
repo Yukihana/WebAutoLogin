@@ -20,7 +20,7 @@ internal static class LatencyAnalyser
         data.TotalCount = data.History.Count;
         data.SuccessCount = data.Successes.Count;
         data.FailureCount = data.History.Count - data.SuccessCount;
-        data.Stability = data.SuccessCount / (float)data.TotalCount;
+        data.Stability = MathF.Round(data.SuccessCount / (float)data.TotalCount, 2);
 
         // Analysis
         if (data.Successes.Count > 0)

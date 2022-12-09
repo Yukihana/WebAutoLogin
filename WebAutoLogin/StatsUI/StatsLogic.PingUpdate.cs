@@ -62,7 +62,6 @@ public partial class StatsLogic
         target.PingTotal = source.TotalCount;
         target.PingSuccesses = source.SuccessCount;
         target.PingFailures = source.TotalCount - source.SuccessCount;
-        target.StabilityPercentString = source.Stability.ToString("0.##");
-        target.StabilityIndex = DetermineQualityIndex(source.Stability);
+        target.Stability = source.Stability;
     }
 }

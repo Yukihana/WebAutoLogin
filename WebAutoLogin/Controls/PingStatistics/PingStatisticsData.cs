@@ -36,15 +36,10 @@ public partial class PingStatisticsData
     [ObservableProperty]
     private float _latencyJitter = 0f;
 
-    // Quality Info
-
-    [ObservableProperty]
-    private byte _stabilityIndex = 0;
-
     // Quality Tooltip Info (Count, Succeeded, RTO, %stability)
 
     [ObservableProperty]
-    private string _stabilityPercentString = string.Empty;
+    private float _stability = 0f;
 
     [ObservableProperty]
     private int _pingTotal = 0;
