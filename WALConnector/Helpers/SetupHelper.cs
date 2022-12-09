@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using WALConnector.Services.Configuration;
 using WALConnector.Services.Connector;
-using WALConnector.Services.PingStats;
+using WALConnector.Services.LatencyAnalysis;
 using WALConnector.Types;
 
 namespace WALConnector.Helpers;
@@ -21,8 +21,8 @@ internal static class SetupHelper
     {
         data.Gateway = new() { Address = config.Gateway, HostType = HostType.Gateway };
         data.Portal = new() { Address = config.Portal, HostType = HostType.Portal };
-        data.Destinations = new(config.Destinations.Select(x => new PingStatsData() { Address = x }));
-        data.Nodes = new(config.Nodes.Select(x => new PingStatsData() { Address = x, HostType = HostType.Node }));
+        data.Destinations = new(config.Destinations.Select(x => new LatencyStatistics() { Address = x }));
+        data.Nodes = new(config.Nodes.Select(x => new LatencyStatistics() { Address = x, HostType = HostType.Node }));
 
         data.Credentials = config.Credentials;
         data.LoginMethodIsPost = config.LoginMethodIsPost;

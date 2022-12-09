@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
-using WALConnector.Services.PingStats;
+using WALConnector.Services.LatencyAnalysis;
 using WebAutoLogin.Controls.PingStatistics;
 
 namespace WebAutoLogin.StatsUI;
@@ -14,36 +14,26 @@ public partial class StatsLogic
     {
         if (ConnectorService == null)
             return;
-        StatsData.Statistics.Clear();
 
-        if (UpdatePingInfo(ConnectorService.Data.Gateway) is PingStatisticsData gateway)
-        {
-            StatsData.Statistics.Add(gateway);
-        }
-        if (UpdatePingInfo(ConnectorService.Data.Portal) is PingStatisticsData portal)
-        {
-            StatsData.Statistics.Add(portal);
-        }
+        StatsData.Gateway = UpdatePingInfo(ConnectorService.Data.Gateway);
+        StatsData.Portal = UpdatePingInfo(ConnectorService.Data.Portal);
+
+        StatsData.Destinations.Clear();
         ConnectorService.Data.Destinations.ForEach(x =>
         {
             if (UpdatePingInfo(x) is PingStatisticsData data)
-                StatsData.Statistics.Add(data);
+                StatsData.Destinations.Add(data);
         });
+
+        StatsData.Nodes.Clear();
         ConnectorService.Data.Nodes.ForEach(x =>
         {
             if (UpdatePingInfo(x) is PingStatisticsData data)
-                StatsData.Statistics.Add(data);
+                StatsData.Nodes.Add(data);
         });
-
-        /*
-        StatsData.Gateway = UpdatePingInfo(ConnectorService.Data.Gateway, StatsData.Gateway);
-        StatsData.Portal = UpdatePingInfo(ConnectorService.Data.Portal, StatsData.Portal);
-        UpdatePingGroup(ConnectorService.Data.Destinations, StatsData.Destinations);
-        UpdatePingGroup(ConnectorService.Data.Nodes, StatsData.Nodes);
-        */
     }
 
-    private static PingStatisticsData? UpdatePingInfo(PingStatsData? source)
+    private static PingStatisticsData? UpdatePingInfo(LatencyStatistics? source)
     {
         // Prepare
         if (source == null)
@@ -56,25 +46,22 @@ public partial class StatsLogic
         return target;
     }
 
-    private static void UpdatePingGroup(List<PingStatsData> nodes, ObservableCollection<PingStatisticsData> nodes1)
-    {
-    }
-
-    private static void UpdateStatistics(PingStatsData source, PingStatisticsData target)
+    private static void UpdateStatistics(LatencyStatistics source, PingStatisticsData target)
     {
         target.Address = source.Address;
         target.HostType = source.HostType;
-        target.LastRoundTripTime = source.LastPing;
+        target.LastRoundTripTime = source.LastRoundTripTime;
 
-        target.PingLowest = source.PingMinimum;
-        target.PingHighest = source.PingMaximum;
-        target.PingJitter = source.PingJitter;
-        target.PingAverage = source.PingAverage;
-        target.LatencyIndex = DetermineLatencyIndex(source.LastPing, source.PingAverage, source.HostType);
+        target.BestLatency = source.BestLatency;
+        target.WorstLatency = source.WorstLatency;
+        target.AverageLatency = source.AverageLatency;
+        target.LatencyJitter = source.LatencyJitter;
 
-        target.PingTotal = source.PingsTotalCount;
-        target.PingSuccesses = source.PingsSuccessCount;
-        target.PingFailures = source.PingsTotalCount - source.PingsSuccessCount;
+        target.LatencyQualityIndex = DetermineLatencyIndex(source.LastRoundTripTime, source.AverageLatency, source.HostType);
+
+        target.PingTotal = source.TotalCount;
+        target.PingSuccesses = source.SuccessCount;
+        target.PingFailures = source.TotalCount - source.SuccessCount;
         target.StabilityPercentString = source.Stability.ToString("0.##");
         target.StabilityIndex = DetermineQualityIndex(source.Stability);
     }

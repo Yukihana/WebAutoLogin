@@ -8,22 +8,42 @@
              d:DataContext="{d:DesignInstance local:NetworkQualityMeterLogic, IsDesignTimeCreatable=True}"
              d:DesignHeight="24" d:DesignWidth="24" d:Background="White">
     <UserControl.Resources>
+        <LinearGradientBrush x:Key="BlueBarBrush" x:Shared="false" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Offset="0" Color="#00F"/>
+            <GradientStop Offset="1" Color="#FFF"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="GreenBarBrush" x:Shared="false" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Offset="0" Color="#0F0"/>
+            <GradientStop Offset="1" Color="#FFF"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="YellowBarBrush" x:Shared="false" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Offset="0" Color="#FF0"/>
+            <GradientStop Offset="1" Color="#FFF"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="RedBarBrush" x:Shared="false" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Offset="0" Color="#F00"/>
+            <GradientStop Offset="1" Color="#FFF"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="GreyBarBrush" x:Shared="false" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Offset="0" Color="#888"/>
+            <GradientStop Offset="1" Color="#444"/>
+        </LinearGradientBrush>
         <Style TargetType="{x:Type Border}" x:Key="SignalBar">
-            <Setter Property="Background" Value="#444" />
+            <Setter Property="Background" Value="{StaticResource GreyBarBrush}"/>
             <Setter Property="Margin" Value="1" />
             <Setter Property="CornerRadius" Value="2" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource Self}}" Value="4">
-                    <Setter Property="Background" Value="#00F" />
+                    <Setter Property="Background" Value="{StaticResource BlueBarBrush}"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource Self}}" Value="3">
-                    <Setter Property="Background" Value="#0F0" />
+                    <Setter Property="Background" Value="{StaticResource GreenBarBrush}" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource Self}}" Value="2">
-                    <Setter Property="Background" Value="#FF0" />
+                    <Setter Property="Background" Value="{StaticResource YellowBarBrush}" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource Self}}" Value="1">
-                    <Setter Property="Background" Value="#F00" />
+                    <Setter Property="Background" Value="{StaticResource RedBarBrush}" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>

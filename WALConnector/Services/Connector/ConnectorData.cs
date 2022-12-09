@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
-using WALConnector.Services.PingStats;
+using WALConnector.Services.LatencyAnalysis;
 using WALConnector.Types;
 
 namespace WALConnector.Services.Connector;
@@ -11,10 +11,10 @@ public class ConnectorData
     public List<string> AvailableNICs { get; internal set; } = new();
     public int DestinationIndex { get; internal set; } = 0;
 
-    public PingStatsData? Gateway { get; internal set; }
-    public PingStatsData? Portal { get; internal set; }
-    public List<PingStatsData> Destinations { get; internal set; } = new();
-    public List<PingStatsData> Nodes { get; internal set; } = new();
+    public LatencyStatistics? Gateway { get; internal set; }
+    public LatencyStatistics? Portal { get; internal set; }
+    public List<LatencyStatistics> Destinations { get; internal set; } = new();
+    public List<LatencyStatistics> Nodes { get; internal set; } = new();
 
     public List<KeyValuePair<string, string>> Credentials { get; internal set; } = new();
     public FormUrlEncodedContent EncodedParams { get; internal set; } = new(new List<KeyValuePair<string, string>>());

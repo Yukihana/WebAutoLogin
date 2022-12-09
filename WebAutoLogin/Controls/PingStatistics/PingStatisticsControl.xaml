@@ -35,20 +35,20 @@
                 <TextBlock.ToolTip>
                     <StackPanel>
                         <TextBlock>
+                            <Run Text="Best:" FontWeight="Bold" />
+                            <Run Text="{Binding BestLatency}" />
+                        </TextBlock>
+                        <TextBlock>
+                            <Run Text="Worst:" FontWeight="Bold" />
+                            <Run Text="{Binding WorstLatency}" />
+                        </TextBlock>
+                        <TextBlock>
                             <Run Text="Average:" FontWeight="Bold" />
-                            <Run Text="{Binding PingAverage}" />
-                        </TextBlock>
-                        <TextBlock>
-                            <Run Text="Lowest:" FontWeight="Bold" />
-                            <Run Text="{Binding PingLowest}" />
-                        </TextBlock>
-                        <TextBlock>
-                            <Run Text="Highest:" FontWeight="Bold" />
-                            <Run Text="{Binding PingHighest}" />
+                            <Run Text="{Binding AverageLatency}" />
                         </TextBlock>
                         <TextBlock>
                             <Run Text="Jitter:" FontWeight="Bold" />
-                            <Run Text="{Binding PingJitter}" />
+                            <Run Text="{Binding LatencyJitter}" />
                         </TextBlock>
                     </StackPanel>
                 </TextBlock.ToolTip>

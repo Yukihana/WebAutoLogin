@@ -1,6 +1,5 @@
 ﻿using WALConnector.Helpers;
 using WALConnector.Services.Configuration;
-using WALConnector.Services.PingStats;
 using WALConnector.Types;
 using System;
 using System.Collections.Generic;
@@ -10,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WALConnector.Services.Logger;
 using System.Net.NetworkInformation;
+using WALConnector.Services.LatencyAnalysis;
 
 namespace WALConnector.Services.Connector;
 
@@ -142,7 +142,7 @@ public class ConnectorService
     {
         if(token.IsCancellationRequested) return;
 
-        List<PingStatsData> pingTargets = new();
+        List<LatencyStatistics> pingTargets = new();
         if (_data.Gateway != null)
             pingTargets.Add(_data.Gateway);
         if (_data.Portal != null)
@@ -170,19 +170,19 @@ public class ConnectorService
         int maxPings = _data.MaximumPingsCount;
         await Parallel.ForEachAsync(pingTargets, async (x, ctoken) => await PollTarget(x, timeout, maxPings, ctoken));
     }
-    private async Task PollTarget(PingStatsData data, int timeout, int maxPings, CancellationToken token = default)
+    private async Task PollTarget(LatencyStatistics data, int timeout, int maxPings, CancellationToken token = default)
     {
         try
         {
             using Ping P = new();
             PingReply reply = await P.SendPingAsync(data.Address, timeout);
-            await Task.Run(() => data.UpdateHistory(reply.RoundtripTime, maxPings), token);
+            await Task.Run(() => data.Append(reply.RoundtripTime, maxPings), token);
 
             if (!IsDebug)
                 return;
 
             if (reply != null)
-                _logger.LogThis($"Ping {data.Address} [{reply.Address}] => {data.LastPing} ms");
+                _logger.LogThis($"Ping {data.Address} [{reply.Address}] => {data.LastRoundTripTime} ms");
         }
         catch
         {
@@ -191,7 +191,7 @@ public class ConnectorService
     }
 
     private bool IsConnected() =>
-        _data.Destinations.Any(x => x.LastPing != -1);
+        _data.Destinations.Any(x => x.LastRoundTripTime != -1);
 
     public async Task<bool?> AttemptLogin(CancellationToken token)
     {

@@ -8,7 +8,7 @@
         mc:Ignorable="d" ResizeMode="CanMinimize"
         d:DataContext="{d:DesignInstance local:StatsLogic, IsDesignTimeCreatable=True}"
         Loaded="Window_Loaded"
-        Title="StatsView" Width="400">
+        Title="WebAutoLogin" Width="400">
     <Window.Resources>
         <ResourceDictionary Source="/StatsUI/StatsUIStyles.xaml"/>
     </Window.Resources>
@@ -63,36 +63,44 @@
         </DockPanel>
         <ScrollViewer x:Name="WebPingers" VerticalScrollBarVisibility="Auto">
             <StackPanel>
-                <pingstat:PingStatisticsControl DataContext="{Binding StatsData.Gateway}"/>
-                <pingstat:PingStatisticsControl DataContext="{Binding StatsData.Portal}"/>
-                <ItemsControl ItemsSource="{Binding StatsData.Destinations}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="pingstat:PingStatisticsData">
-                            <pingstat:PingStatisticsControl DataContext="{Binding}"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <ItemsControl ItemsSource="{Binding StatsData.Nodes}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <pingstat:PingStatisticsControl DataContext="{Binding}"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <ItemsControl ItemsSource="{Binding StatsData.Statistics}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="pingstat:PingStatisticsData">
-                            <pingstat:PingStatisticsControl DataContext="{Binding}"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <ItemsControl ItemsSource="{Binding StatsData.AvailableNICs}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="pingstat:PingStatisticsData">
-                            <TextBlock Text="{Binding}"/>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                <pingstat:PingStatisticsControl DataContext="{Binding StatsData.Gateway}" Margin="5"/>
+                <pingstat:PingStatisticsControl DataContext="{Binding StatsData.Portal}" Margin="5"/>
+                <Expander IsExpanded="True">
+                    <Expander.Header>
+                        <TextBlock Text="Destinations" Opacity="0.3" Margin="5"/>
+                    </Expander.Header>
+                    <ItemsControl ItemsSource="{Binding StatsData.Destinations}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="pingstat:PingStatisticsData">
+                                <pingstat:PingStatisticsControl DataContext="{Binding}" Margin="5"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Expander>
+                <Expander IsExpanded="True">
+                    <Expander.Header>
+                        <TextBlock Text="Nodes" Opacity="0.3" Margin="5"/>
+                    </Expander.Header>
+                    <ItemsControl ItemsSource="{Binding StatsData.Nodes}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="pingstat:PingStatisticsData">
+                                <pingstat:PingStatisticsControl DataContext="{Binding}" Margin="5"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Expander>
+                <Expander IsExpanded="True">
+                    <Expander.Header>
+                        <TextBlock Text="Available NICs" Opacity="0.3" Margin="5"/>
+                    </Expander.Header>
+                    <ItemsControl ItemsSource="{Binding StatsData.AvailableNICs}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="pingstat:PingStatisticsData">
+                                <TextBlock Text="{Binding}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Expander>
             </StackPanel>
         </ScrollViewer>
     </StackPanel>
