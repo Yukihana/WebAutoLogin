@@ -1,54 +1,49 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
-using WALConnector.Types;
+using System.Windows;
+using WALConnector.Services.Connector;
 
 namespace WebAutoLogin.StatsUI;
 
 [ObservableObject]
 public partial class StatsLogic
 {
-    internal void Loaded()
-        => PingUpdate();
+    // Connector Service
 
-    public void LoginUpdate()
+    private ConnectorService? _connectorService;
+
+    public ConnectorService? ConnectorService
     {
+        get => _connectorService;
+        set
+        {
+            _connectorService?.Decouple();
+            _connectorService = value;
+            if (_connectorService != null)
+            {
+                _connectorService.OnStarted = Loaded;
+                _connectorService.OnProgressChanged = ProgressChanged;
+                _connectorService.OnPingsPolled = PingUpdateThreadSafe;
+                _connectorService.OnLoginAttempted = LoginAttempted;
+                _connectorService.OnLoginSucceeded = LoginUpdate;
+            }
+        }
     }
 
+    // Data Model
 
+    private readonly StatsData _statsData = new();
+    public StatsData StatsData => _statsData;
 
-    private static byte DetermineLatencyIndex(long ping, double pingAverage, HostType hostType)
+    // Initialisation
+
+    internal void Loaded()
+    => PingUpdate();
+
+    public void LoginAttempted()
     {
-        if (ping < 0)
-            return 0;
-
-        // For internet domains
-        if (hostType == HostType.Destination)
-        {
-            if (ping < pingAverage * 0.98)
-                return 1;
-            if (ping < pingAverage * 1.02)
-                return 2;
-            if (ping < pingAverage * 1.1)
-                return 3;
-            if (ping < pingAverage * 1.5)
-                return 4;
-            if (ping < pingAverage * 2)
-                return 5;
-            return 6;
-        }
-
-        // For LAN/WAN addresses
-        if (ping == 0)
-            return 1;
-        if (ping <= 2)
-            return 2;
-        if (ping <= 5)
-            return 3;
-        if (ping <= 10)
-            return 4;
-        if (ping < 20)
-            return 5;
-        return 6;
+    }
+    public void LoginUpdate()
+    {
     }
 
 

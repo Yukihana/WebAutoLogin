@@ -1,0 +1,15 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style TargetType="{x:Type Border}" x:Key="SignalBar">
+        <Setter Property="Margin" Value="1" />
+        <Setter Property="CornerRadius" Value="2" />
+    </Style>
+    <Color x:Key="BarColorX" R="225" G="225" B="225"/>
+    <Color x:Key="BarColor0" R="0" G="0" B="0"/>
+    <Color x:Key="BarColor1" R="225" G="225" B="225"/>
+    <Color x:Key="BarColor2" R="225" G="225" B="225"/>
+    <Color x:Key="BarColor3" R="225" G="225" B="225"/>
+    <Color x:Key="BarColor4" R="225" G="225" B="225"/>
+    <Color x:Key="BarColor5" R="225" G="225" B="225"/>
+    <Color x:Key="BarColor6" R="225" G="225" B="225"/>
+</ResourceDictionary>

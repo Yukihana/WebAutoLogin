@@ -29,4 +29,8 @@ public class ConnectorData
     public int LoginPollMultiplier { get; internal set; } = 20;
     public LoginBehaviour LoginBehaviour { get; internal set; } = LoginBehaviour.OnDisconnected;
     public int LoginTimeout { get; internal set; } = 1000;
+
+    // Status
+
+    public float Progress { get; internal set; } = 0f;
 }

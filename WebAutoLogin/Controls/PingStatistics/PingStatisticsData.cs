@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using System.Windows.Media;
 using WALConnector.Types;
 
 namespace WebAutoLogin.Controls.PingStatistics;
@@ -12,7 +13,13 @@ public partial class PingStatisticsData
     private string _address = string.Empty;
 
     [ObservableProperty]
-    private HostType _hostType = HostType.Destination;
+    private string _resolvedAddress = string.Empty;
+
+    [ObservableProperty]
+    private HostType _nodeType = HostType.Destination;
+
+    [ObservableProperty]
+    private string _lastStatus = string.Empty;
 
     // Latency Info
 
@@ -36,10 +43,30 @@ public partial class PingStatisticsData
     [ObservableProperty]
     private float _latencyJitter = 0f;
 
+    // Quality Colors
+
+    [ObservableProperty]
+    private Color _bar1ColorA = new() { R = 240, G = 240, B = 240 };
+
+    [ObservableProperty]
+    private Color _bar1ColorB = new() { R = 240, G = 240, B = 240 };
+
+    [ObservableProperty]
+    private Color _bar2ColorA = new() { R = 240, G = 240, B = 240 };
+
+    [ObservableProperty]
+    private Color _bar2ColorB = new() { R = 240, G = 240, B = 240 };
+
+    [ObservableProperty]
+    private Color _bar3ColorA = new() { R = 240, G = 240, B = 240 };
+
+    [ObservableProperty]
+    private Color _bar3ColorB = new() { R = 240, G = 240, B = 240 };
+
     // Quality Tooltip Info (Count, Succeeded, RTO, %stability)
 
     [ObservableProperty]
-    private float _stability = 0f;
+    private float _reliability = 0f;
 
     [ObservableProperty]
     private int _pingTotal = 0;

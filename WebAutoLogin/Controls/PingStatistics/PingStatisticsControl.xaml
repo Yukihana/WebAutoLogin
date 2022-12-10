@@ -7,12 +7,6 @@
              UseLayoutRounding="True" SnapsToDevicePixels="True"
              mc:Ignorable="d" d:Background="White" d:Width="400"
              d:DataContext="{d:DesignInstance Type=local:PingStatisticsData, IsDesignTimeCreatable=True}">
-    <UserControl.Resources>
-        <Style TargetType="{x:Type Border}" x:Key="SignalBar">
-            <Setter Property="Margin" Value="1" />
-            <Setter Property="CornerRadius" Value="2" />
-        </Style>
-    </UserControl.Resources>
     <DockPanel>
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
             <TextBlock VerticalAlignment="Center" Margin="10 0">
@@ -20,19 +14,19 @@
                     <Style TargetType="{x:Type TextBlock}">
                         <Setter Property="Foreground" Value="#08F" />
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding StabilityIndex}" Value="4">
+                            <DataTrigger Binding="{Binding LatencyQualityIndex}" Value="4">
                                 <Setter Property="Foreground" Value="#0BB" />
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding StabilityIndex}" Value="3">
+                            <DataTrigger Binding="{Binding LatencyQualityIndex}" Value="3">
                                 <Setter Property="Foreground" Value="#0B0" />
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding StabilityIndex}" Value="2">
+                            <DataTrigger Binding="{Binding LatencyQualityIndex}" Value="2">
                                 <Setter Property="Foreground" Value="#BB0" />
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding StabilityIndex}" Value="1">
+                            <DataTrigger Binding="{Binding LatencyQualityIndex}" Value="1">
                                 <Setter Property="Foreground" Value="#F80" />
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding StabilityIndex}" Value="0">
+                            <DataTrigger Binding="{Binding LatencyQualityIndex}" Value="0">
                                 <Setter Property="Foreground" Value="#800" />
                             </DataTrigger>
                         </Style.Triggers>
@@ -63,23 +57,19 @@
             </TextBlock>
             <Grid Height="24" Width="24" Margin="5">
                 <Grid.ToolTip>
-                    <StackPanel>
-                        <TextBlock>
-                            <Run Text="Quality:" FontWeight="Bold" />
-                            <Run Text="{Binding Stability}" />
-                            <Run Text="out of" />
-                            <Run Text="{Binding PingTotal}" />
-                            <Run Text="pings." />
-                        </TextBlock>
-                        <TextBlock>
-                            <Run Text="Successes:" FontWeight="Bold" />
-                            <Run Text="{Binding PingSuccesses}" />
-                        </TextBlock>
-                        <TextBlock>
-                            <Run Text="Timed out:" FontWeight="Bold" />
-                            <Run Text="{Binding PingSuccesses}" />
-                        </TextBlock>
-                    </StackPanel>
+                    <TextBlock>
+                        <Run Text="Reliability:" FontWeight="Bold"/>
+                        <Run Text="ReliabilityPercent"/>
+                        <LineBreak/>
+                        <Run Text="Successes:" FontWeight="Bold"/>
+                        <Run Text="{Binding PingSuccesses}" />
+                        <LineBreak/>
+                        <Run Text="Failures:" FontWeight="Bold"/>
+                        <Run Text="{Binding PingFailures}" />
+                        <LineBreak/>
+                        <Run Text="Total:" FontWeight="Bold"/>
+                        <Run Text="{Binding PingTotal}" />
+                    </TextBlock>
                 </Grid.ToolTip>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
@@ -121,8 +111,17 @@
                 </Border>
             </Grid>
         </StackPanel>
-        <DockPanel ToolTip="{Binding Address}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10 0">
-            <TextBlock DockPanel.Dock="Right" Text="{Binding HostType}" Opacity="0.4" Margin="10 0 0 0"/>
+        <DockPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10 0">
+            <DockPanel.ToolTip>
+                <TextBlock>
+                    <Run Text="IP:" FontWeight="Bold"/>
+                    <Run Text="{Binding ResolvedAddress}"/>
+                    <LineBreak/>
+                    <Run Text="Last status:" FontWeight="Bold"/>
+                    <Run Text="{Binding LastStatus}"/>
+                </TextBlock>
+            </DockPanel.ToolTip>
+            <TextBlock DockPanel.Dock="Right" Text="{Binding NodeType}" Opacity="0.4" Margin="10 0 0 0"/>
             <TextBlock Text="{Binding Address}" TextTrimming="CharacterEllipsis" />
         </DockPanel>
     </DockPanel>

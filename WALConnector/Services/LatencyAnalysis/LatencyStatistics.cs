@@ -13,15 +13,17 @@ public class LatencyStatistics
     // Primary
 
     public string Address { get; internal set; } = string.Empty;
-    public HostType HostType { get; internal set; } = HostType.Destination;
+    public string ResolvedAddress { get; internal set; } = string.Empty;
+    public HostType NodeType { get; internal set; } = HostType.Destination;
     public long LastRoundTripTime { get; internal set; } = -1;
+    public string LastStatus { get; internal set; } = string.Empty;
 
     // Quality
 
     public int TotalCount { get; internal set; } = 0;
     public int SuccessCount { get; internal set; } = 0;
     public int FailureCount { get; internal set; }
-    public float Stability { get; internal set; } = 0f;
+    public float Reliability { get; internal set; } = 0f;
 
     // Analysis
 

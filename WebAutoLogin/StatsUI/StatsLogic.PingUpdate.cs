@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Windows;
+﻿using System.Windows;
 using WALConnector.Services.LatencyAnalysis;
 using WebAutoLogin.Controls.PingStatistics;
 
@@ -10,6 +8,7 @@ public partial class StatsLogic
 {
     public void PingUpdateThreadSafe()
         => Application.Current.Dispatcher.Invoke(PingUpdate);
+
     private void PingUpdate()
     {
         if (ConnectorService == null)
@@ -49,19 +48,21 @@ public partial class StatsLogic
     private static void UpdateStatistics(LatencyStatistics source, PingStatisticsData target)
     {
         target.Address = source.Address;
-        target.HostType = source.HostType;
+        target.ResolvedAddress = source.ResolvedAddress;
+        target.NodeType = source.NodeType;
         target.LastRoundTripTime = source.LastRoundTripTime;
+        target.LastStatus = source.LastStatus;
 
         target.BestLatency = source.BestLatency;
         target.WorstLatency = source.WorstLatency;
         target.AverageLatency = source.AverageLatency;
         target.LatencyJitter = source.LatencyJitter;
 
-        target.LatencyQualityIndex = DetermineLatencyIndex(source.LastRoundTripTime, source.AverageLatency, source.HostType);
+        target.LatencyQualityIndex = source.LastRoundTripTime.DetermineLatencyIndex(source.AverageLatency, source.NodeType);
 
         target.PingTotal = source.TotalCount;
         target.PingSuccesses = source.SuccessCount;
         target.PingFailures = source.TotalCount - source.SuccessCount;
-        target.Stability = source.Stability;
+        target.Reliability = source.Reliability;
     }
 }

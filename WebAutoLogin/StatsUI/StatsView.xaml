@@ -8,10 +8,8 @@
         mc:Ignorable="d" ResizeMode="CanMinimize"
         d:DataContext="{d:DesignInstance local:StatsLogic, IsDesignTimeCreatable=True}"
         Loaded="Window_Loaded"
-        Title="WebAutoLogin" Width="400">
-    <Window.Resources>
-        <ResourceDictionary Source="/StatsUI/StatsUIStyles.xaml"/>
-    </Window.Resources>
+        Title="WebAutoLogin" Width="400"
+        SizeToContent="Height" MaxHeight="600">
     <StackPanel>
         <UniformGrid Rows="1" Height="100" Margin="5">
             <!--Connected Status-->
@@ -103,5 +101,14 @@
                 </Expander>
             </StackPanel>
         </ScrollViewer>
+        <ProgressBar Value="{Binding StatsData.Progress}" Minimum="0" Maximum="1" Height="4"
+                     Background="Transparent" BorderThickness="0">
+            <ProgressBar.Foreground>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Offset="0" Color="Transparent"/>
+                    <GradientStop Offset="1" Color="#6af"/>
+                </LinearGradientBrush>
+            </ProgressBar.Foreground>
+        </ProgressBar>
     </StackPanel>
 </Window>

@@ -52,4 +52,9 @@ public partial class StatsData
 
     [ObservableProperty]
     private ObservableCollection<string> _availableNICs = new();
+
+    // Misc
+
+    [ObservableProperty]
+    private float _progress = 0f;
 }

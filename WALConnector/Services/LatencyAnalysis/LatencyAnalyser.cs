@@ -1,26 +1,34 @@
 ﻿using System;
 using System.Linq;
+using System.Net.NetworkInformation;
 
 namespace WALConnector.Services.LatencyAnalysis;
 
 internal static class LatencyAnalyser
 {
-    internal static void Append(this LatencyStatistics data, long roundtripTime, int maxPings)
+    internal static void Append(this LatencyStatistics data, PingReply reply, int maxPings)
     {
+        data.LastStatus = reply.Status.ToString();
+        var roundTripTime
+            = reply.Status == IPStatus.Success
+            ? reply.RoundtripTime
+            : -1;
+        data.ResolvedAddress = reply.Address.ToString();
+
         // Source
-        data.History.Add(roundtripTime);
+        data.History.Add(roundTripTime);
         while (data.History.Count > maxPings)
-            data.History.Remove(0);
+            data.History.RemoveAt(0);
         data.Successes = data.History.Where(x => x != -1).ToList();
 
         // Primary
-        data.LastRoundTripTime = roundtripTime;
+        data.LastRoundTripTime = roundTripTime;
 
         // Quality
         data.TotalCount = data.History.Count;
         data.SuccessCount = data.Successes.Count;
-        data.FailureCount = data.History.Count - data.SuccessCount;
-        data.Stability = MathF.Round(data.SuccessCount / (float)data.TotalCount, 2);
+        data.FailureCount = data.TotalCount - data.SuccessCount;
+        data.Reliability = MathF.Round(data.SuccessCount / (float)data.TotalCount, 2);
 
         // Analysis
         if (data.Successes.Count > 0)

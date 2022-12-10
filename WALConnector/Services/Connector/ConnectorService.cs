@@ -31,6 +31,8 @@ public class ConnectorService
 
     public Action? OnStarted;
 
+    public Action? OnProgressChanged;
+
     public Action? OnPingsPolled;
 
     public Action? OnLoginAttempted;
@@ -73,6 +75,8 @@ public class ConnectorService
     }
     public void Decouple()
     {
+        OnStarted = null;
+        OnProgressChanged = null;
         OnPingsPolled = null;
         OnLoginAttempted = null;
         OnLoginSucceeded = null;
@@ -89,6 +93,9 @@ public class ConnectorService
 
         while (!token.IsCancellationRequested)
         {
+            _data.Progress = pingIntervalCounter / (float)pingInterval;
+            _ = Task.Run(() => OnProgressChanged?.Invoke(), CancellationToken.None);
+
             // Ping wait cycle
             if (pingIntervalCounter < pingInterval)
             {
@@ -176,13 +183,15 @@ public class ConnectorService
         {
             using Ping P = new();
             PingReply reply = await P.SendPingAsync(data.Address, timeout);
-            await Task.Run(() => data.Append(reply.RoundtripTime, maxPings), token);
+            await Task.Run(() => data.Append(reply, maxPings), token);
 
-            if (!IsDebug)
-                return;
-
-            if (reply != null)
-                _logger.LogThis($"Ping {data.Address} [{reply.Address}] => {data.LastRoundTripTime} ms");
+            if (IsDebug)
+            {
+                if (reply.Status == IPStatus.Success)
+                    _logger.LogThis($"Ping {data.Address} [{reply.Address}] => {data.LastRoundTripTime} ms");
+                else
+                    _logger.LogThis($"Ping {data.Address} [{reply.Address}] :: {reply.Status}");
+            }
         }
         catch
         {
