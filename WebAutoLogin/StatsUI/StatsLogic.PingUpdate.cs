@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
+using WALConnector.Helpers;
 using WALConnector.Services.LatencyAnalysis;
 using WebAutoLogin.Controls.PingStatistics;
 
@@ -64,5 +66,15 @@ public partial class StatsLogic
         target.PingSuccesses = source.SuccessCount;
         target.PingFailures = source.TotalCount - source.SuccessCount;
         target.Reliability = source.Reliability;
+        target.ReliabilityPercentString = $"{source.Reliability * 100}%";
+
+        var barColor = source.Reliability.GetColor().DeepClone();
+        target.BarColorTop = barColor.DeepClone();
+        barColor.A = (byte) (byte.MaxValue * 0.5f);
+        target.BarColorBottom = barColor;
+
+        target.Bar1Enabled = source.Reliability > 0.9;
+        target.Bar2Enabled = source.Reliability > 0.75;
+        target.Bar3Enabled = source.Reliability > 0.5;
     }
 }

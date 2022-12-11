@@ -59,7 +59,7 @@
                 <Grid.ToolTip>
                     <TextBlock>
                         <Run Text="Reliability:" FontWeight="Bold"/>
-                        <Run Text="ReliabilityPercent"/>
+                        <Run Text="{Binding ReliabilityPercentString}"/>
                         <LineBreak/>
                         <Run Text="Successes:" FontWeight="Bold"/>
                         <Run Text="{Binding PingSuccesses}" />
@@ -82,32 +82,104 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
-                <Border Grid.Row="2"
-                        Style="{StaticResource SignalBar}">
+                <Border Grid.Row="2">
                     <Border.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                            <GradientStop Offset="0" Color="{Binding Bar1ColorA}"/>
-                            <GradientStop Offset="0" Color="{Binding Bar1ColorB}"/>
+                            <GradientStop Offset="0" Color="{Binding BarColorTop}"/>
+                            <GradientStop Offset="1" Color="{Binding BarColorBottom}"/>
                         </LinearGradientBrush>
                     </Border.Background>
+                    <Border.Style>
+                        <Style TargetType="{x:Type Border}" BasedOn="{StaticResource SignalBar}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Bar1Enabled}" Value="False">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <BeginStoryboard.Storyboard>
+                                                <Storyboard
+                                                    AutoReverse="True">
+                                                    <ColorAnimation
+                                                        Storyboard.TargetProperty="Background.GradientStops[0].Color"
+                                                        To="{StaticResource DisabledBarColorTop}"
+                                                        Duration="0:0:0.2"/>
+                                                    <ColorAnimation
+                                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                        To="{StaticResource DisabledBarColorBottom}"
+                                                        Duration="0:0:0.2"/>
+                                                </Storyboard>
+                                            </BeginStoryboard.Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
                 </Border>
-                <Border Grid.Column="1" Grid.Row="1" Grid.RowSpan="2"
-                        Style="{StaticResource SignalBar}">
+                <Border Grid.Column="1" Grid.Row="1" Grid.RowSpan="2">
                     <Border.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                            <GradientStop Offset="0" Color="{Binding Bar2ColorA}"/>
-                            <GradientStop Offset="0" Color="{Binding Bar2ColorB}"/>
+                            <GradientStop Offset="0" Color="{Binding BarColorTop}"/>
+                            <GradientStop Offset="1" Color="{Binding BarColorBottom}"/>
                         </LinearGradientBrush>
                     </Border.Background>
+                    <Border.Style>
+                        <Style TargetType="{x:Type Border}" BasedOn="{StaticResource SignalBar}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Bar2Enabled}" Value="False">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <BeginStoryboard.Storyboard>
+                                                <Storyboard
+                                                    AutoReverse="True">
+                                                    <ColorAnimation
+                                                        Storyboard.TargetProperty="Background.GradientStops[0].Color"
+                                                        To="{StaticResource DisabledBarColorTop}"
+                                                        Duration="0:0:0.2"/>
+                                                    <ColorAnimation
+                                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                        To="{StaticResource DisabledBarColorBottom}"
+                                                        Duration="0:0:0.2"/>
+                                                </Storyboard>
+                                            </BeginStoryboard.Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
                 </Border>
-                <Border Grid.Column="2" Grid.Row="0" Grid.RowSpan="3"
-                        Style="{StaticResource SignalBar}">
+                <Border Grid.Column="2" Grid.Row="0" Grid.RowSpan="3">
                     <Border.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                            <GradientStop Offset="0" Color="{Binding Bar3ColorA}"/>
-                            <GradientStop Offset="0" Color="{Binding Bar3ColorB}"/>
+                            <GradientStop Offset="0" Color="{Binding BarColorTop}"/>
+                            <GradientStop Offset="1" Color="{Binding BarColorBottom}"/>
                         </LinearGradientBrush>
                     </Border.Background>
+                    <Border.Style>
+                        <Style TargetType="{x:Type Border}" BasedOn="{StaticResource SignalBar}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Bar3Enabled}" Value="False">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <BeginStoryboard.Storyboard>
+                                                <Storyboard
+                                                    AutoReverse="True">
+                                                    <ColorAnimation
+                                                        Storyboard.TargetProperty="Background.GradientStops[0].Color"
+                                                        To="{StaticResource DisabledBarColorTop}"
+                                                        Duration="0:0:0.2"/>
+                                                    <ColorAnimation
+                                                        Storyboard.TargetProperty="Background.GradientStops[1].Color"
+                                                        To="{StaticResource DisabledBarColorBottom}"
+                                                        Duration="0:0:0.2"/>
+                                                </Storyboard>
+                                            </BeginStoryboard.Storyboard>
+                                        </BeginStoryboard>
+                                    </DataTrigger.EnterActions>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
                 </Border>
             </Grid>
         </StackPanel>

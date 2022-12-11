@@ -46,27 +46,30 @@ public partial class PingStatisticsData
     // Quality Colors
 
     [ObservableProperty]
-    private Color _bar1ColorA = new() { R = 240, G = 240, B = 240 };
+    private Color _barColorDefault = new() { R = 127, G = 127, B = 127, A = 63 };
 
     [ObservableProperty]
-    private Color _bar1ColorB = new() { R = 240, G = 240, B = 240 };
+    private Color _barColorTop = new() { R = 127, G = 127, B = 127, A = 63 };
 
     [ObservableProperty]
-    private Color _bar2ColorA = new() { R = 240, G = 240, B = 240 };
+    private Color _barColorBottom = new() { R = 127, G = 127, B = 127, A = 63 };
 
     [ObservableProperty]
-    private Color _bar2ColorB = new() { R = 240, G = 240, B = 240 };
+    private bool _bar1Enabled = true;
 
     [ObservableProperty]
-    private Color _bar3ColorA = new() { R = 240, G = 240, B = 240 };
+    private bool _bar2Enabled = true;
 
     [ObservableProperty]
-    private Color _bar3ColorB = new() { R = 240, G = 240, B = 240 };
+    private bool _bar3Enabled = true;
 
     // Quality Tooltip Info (Count, Succeeded, RTO, %stability)
 
     [ObservableProperty]
     private float _reliability = 0f;
+
+    [ObservableProperty]
+    private string _reliabilityPercentString = string.Empty;
 
     [ObservableProperty]
     private int _pingTotal = 0;
