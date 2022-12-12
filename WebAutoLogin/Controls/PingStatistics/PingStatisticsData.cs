@@ -27,6 +27,9 @@ public partial class PingStatisticsData
     private long _lastRoundTripTime = -1;
 
     [ObservableProperty]
+    private Color _latencyColor = new() { R = 127, G = 127, B = 127, A = 255 };
+
+    [ObservableProperty]
     private byte _latencyQualityIndex = 0;
 
     // Latency Tooltip Info (Average, Min, Max, Jitter)

@@ -162,7 +162,7 @@ public class ConnectorService
                 pingTargets.Add(_data.Destinations[_data.DestinationIndex]);
 
                 _data.DestinationIndex++;
-                if (_data.DestinationIndex > _data.Destinations.Count)
+                if (_data.DestinationIndex >= _data.Destinations.Count)
                     _data.DestinationIndex = 0;
             }
             else

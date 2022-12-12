@@ -1,26 +1,55 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:sys="clr-namespace:System;assembly=netstandard">
+                    xmlns:sys="clr-namespace:System;assembly=netstandard"
+                    xmlns:psc="clr-namespace:WebAutoLogin.Controls.PingStatistics">
+
+    <!--Latency-->
+
+    <Color x:Key="LatencyFallbackColor" R="127" G="127" B="127" A="127" />
+
+    <psc:CurveRemote x:Key="RemoteLatencyCurve">
+        <sys:Single>0.98</sys:Single>
+        <sys:Single>1.02</sys:Single>
+        <sys:Single>1.1</sys:Single>
+        <sys:Single>1.5</sys:Single>
+        <sys:Single>2</sys:Single>
+    </psc:CurveRemote>
+    <psc:CurveLocal x:Key="LocalLatencyCurve">
+        <sys:Int64>0</sys:Int64>
+        <sys:Int64>2</sys:Int64>
+        <sys:Int64>5</sys:Int64>
+        <sys:Int64>10</sys:Int64>
+        <sys:Int64>20</sys:Int64>
+    </psc:CurveLocal>
+    <psc:Palette x:Key="LatencyCurveColors">
+        <Color R="136" G="0" B="0" A="255" />
+        <Color R="225" G="136" B="0" A="255" />
+        <Color R="187" G="187" B="0" A="255" />
+        <Color R="0" G="187" B="0" A="255" />
+        <Color R="0" G="187" B="187" A="255" />
+        <Color R="0" G="136" B="225" A="255" />
+    </psc:Palette>
+
+    <!--Signal Bar-->
 
     <Style TargetType="{x:Type Border}" x:Key="SignalBar">
         <Setter Property="Margin" Value="1" />
         <Setter Property="CornerRadius" Value="2" />
     </Style>
-    <Color x:Key="DisabledBarColorTop" R="127" G="127" B="127" A="63"/>
-    <Color x:Key="DisabledBarColorBottom" R="127" G="127" B="127" A="127"/>
+    <Color x:Key="DisabledBarColorTop" R="127" G="127" B="127" A="63" />
+    <Color x:Key="DisabledBarColorBottom" R="127" G="127" B="127" A="127" />
 
     <sys:String x:Key="BarColorCurvePoints">
         0, 0.5, 0.75, 0.9, 0.97, 1
     </sys:String>
-    <Color x:Key="BarColorDisabled" R="225" G="225" B="225" A="255"/>
-    <Color x:Key="BarColorMin" R="225" G="225" B="225" A="255"/>
-    <Color x:Key="BarColorMax" R="102" G="0" B="225" A="255"/>
+    <Color x:Key="BarColorDisabled" R="225" G="225" B="225" A="255" />
+    <Color x:Key="BarColorMin" R="225" G="225" B="225" A="255" />
+    <Color x:Key="BarColorMax" R="102" G="0" B="225" A="255" />
 
-    <Color x:Key="BarColor0" R="136" G="0" B="0" A="255"/>
-    <Color x:Key="BarColor1" R="225" G="136" B="0" A="255"/>
-    <Color x:Key="BarColor2" R="187" G="187" B="0" A="255"/>
-    <Color x:Key="BarColor3" R="0" G="187" B="0" A="255"/>
-    <Color x:Key="BarColor4" R="0" G="187" B="187" A="255"/>
-    <Color x:Key="BarColor5" R="0" G="136" B="225" A="255"/>
-
+    <Color x:Key="BarColor0" R="136" G="0" B="0" A="255" />
+    <Color x:Key="BarColor1" R="225" G="136" B="0" A="255" />
+    <Color x:Key="BarColor2" R="187" G="187" B="0" A="255" />
+    <Color x:Key="BarColor3" R="0" G="187" B="0" A="255" />
+    <Color x:Key="BarColor4" R="0" G="187" B="187" A="255" />
+    <Color x:Key="BarColor5" R="0" G="136" B="225" A="255" />
 </ResourceDictionary>

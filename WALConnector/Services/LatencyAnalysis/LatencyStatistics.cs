@@ -15,6 +15,7 @@ public class LatencyStatistics
     public string Address { get; internal set; } = string.Empty;
     public string ResolvedAddress { get; internal set; } = string.Empty;
     public HostType NodeType { get; internal set; } = HostType.Destination;
+    public bool IsDestination => NodeType == HostType.Destination;
     public long LastRoundTripTime { get; internal set; } = -1;
     public string LastStatus { get; internal set; } = string.Empty;
 

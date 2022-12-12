@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using WALConnector.Helpers;
 using WALConnector.Services.LatencyAnalysis;
 using WebAutoLogin.Controls.PingStatistics;
@@ -60,7 +59,9 @@ public partial class StatsLogic
         target.AverageLatency = source.AverageLatency;
         target.LatencyJitter = source.LatencyJitter;
 
-        target.LatencyQualityIndex = source.LastRoundTripTime.DetermineLatencyIndex(source.AverageLatency, source.NodeType);
+        target.LatencyColor = source.IsDestination
+            ? source.LastRoundTripTime.GetRemoteLatencyGradeColor(source.AverageLatency)
+            : source.LastRoundTripTime.GetLocalLatencyGradeColor();
 
         target.PingTotal = source.TotalCount;
         target.PingSuccesses = source.SuccessCount;
@@ -70,7 +71,7 @@ public partial class StatsLogic
 
         var barColor = source.Reliability.GetColor().DeepClone();
         target.BarColorTop = barColor.DeepClone();
-        barColor.A = (byte) (byte.MaxValue * 0.5f);
+        barColor.A = (byte)(byte.MaxValue * 0.5f);
         target.BarColorBottom = barColor;
 
         target.Bar1Enabled = source.Reliability > 0.9;
